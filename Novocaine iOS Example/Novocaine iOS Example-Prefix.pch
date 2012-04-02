@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'Novocaine' target in the 'Novocaine' project
+// Prefix header for all source files of the 'Novocaine iOS Example' target in the 'Novocaine iOS Example' project
 //
 
 #import <Availability.h>
