@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+	<script type="text/javascript" src="http://use.typekit.com/rjs0otx.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	
+	
+	
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+
+    <div class="container-fluid">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>Novocaine</h1><br>
+        <p>An analgesic for high-performance audio on the iPhone, iPad and Mac OS X. </p>
+		<p>Really fast audio in iOS and Mac OS X using Audio Units is hard, and will leave you scarred and bloody. 
+			What used to take hours relentless sobbing now starts with just a handful of lines of code.</p>
+<br/>
+	<h3>Getting Audio</h4>
+<p>
+<pre>Novacaine *audioManager = [Novacaine audioManager];
+[audioManager setInputBlock^(float *newAudio, UInt32 numSamples, UInt32 numChannels) {
+	// Now you're getting audio from the microphone every 20 milliseconds or so. How's that for easy?
+	// Audio comes in interleaved, so, 
+	// if numChannels = 2, newAudio[0] is channel 1, newAudio[1] is channel 2, newAudio[2] is channel 1, etc. 
+}];
+</pre>
+</p>
+
+	<h3>Playing Audio</h4>
+<p>
+<pre>Novacaine *audioManager = [Novacaine audioManager];
+[audioManager setOutputBlock^(float *audioToPlay, UInt32 numSamples, UInt32 numChannels) {
+	// All you have to do is put your audio into "audioToPlay". 
+}];
+</pre>
+</p>
+
+<br/>
+
+<div>
+		<h3>Does anybody actually use it?</h3>
+		<p>Yep. Novacaine is result of three years of work on the audio engine of <a href="http://itunes.apple.com/us/app/octave-an-rta-for-the-iphone/id386083594?mt=8">Octave</a>, <a href="http://itunes.apple.com/us/app/fourier/id386084557?mt=8">Fourier</a> and <a href="http://itunes.apple.com/us/app/oscope/id344345859?mt=8">oScope</a>, a powerful suite of audio analysis apps.
+</div>
+<br/>
+	
+
+        <p><a href="https://github.com/alexbw/Novacaine" class="btn primary large">View Project on Github</a></p>
+      </div>
+
+
+      <hr>
+
+      <footer>
+        <p>&copy; <a href="http://alexspixels.com/">Alex Wiltschko</a>, 2012</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap-transition.js"></script>
+    <script src="js/bootstrap-alert.js"></script>
+    <script src="js/bootstrap-modal.js"></script>
+    <script src="js/bootstrap-dropdown.js"></script>
+    <script src="js/bootstrap-scrollspy.js"></script>
+    <script src="js/bootstrap-tab.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/bootstrap-popover.js"></script>
+    <script src="js/bootstrap-button.js"></script>
+    <script src="js/bootstrap-collapse.js"></script>
+    <script src="js/bootstrap-carousel.js"></script>
+    <script src="js/bootstrap-typeahead.js"></script>
+
+  </body>
+</html>
