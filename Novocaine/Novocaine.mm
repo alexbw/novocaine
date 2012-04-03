@@ -1,50 +1,37 @@
-//
-//  Novocaine.m
-//  oScope
-//
-//  Created by Alex Wiltschko on 7/7/10.
-//  Copyright 2010 Alex Wiltschko. All rights reserved.
+// Copyright (c) 2012 Alex Wiltschko
+// 
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
 //
 // TODO:
 // Switching mic and speaker on/off
-// Moving iPhone to floats, if supported on device
-// Switching session categories based on mic configuration
-// Testing removal of audio blocks
-// Testing forced switching of audio routes
-// 
-// 
-// Compiling to a linkable library.
 //
 // HOUSEKEEPING AND NICE FEATURES:
 // Disambiguate outputFormat (the AUHAL's stream format)
-// How do I check if audio input is available on the mac?
+// More nuanced input detection on the Mac
 // Route switching should work, check with iPhone
 // Device switching should work, check with laptop. Read that damn book.
-// Wrap logging with debug macros
+// Wrap logging with debug macros.
 // Think about what should be public, what private.
 // Ability to select non-default devices.
-
-
-
-// generic error handler - if err is nonzero, prints error message and exits program.
-//static void CheckError(OSStatus error, const char *operation)
-//{
-//	if (error == noErr) return;
-//	
-//	char str[20];
-//	// see if it appears to be a 4-char-code
-//	*(UInt32 *)(str + 1) = CFSwapInt32HostToBig(error);
-//	if (isprint(str[1]) && isprint(str[2]) && isprint(str[3]) && isprint(str[4])) {
-//		str[0] = str[5] = '\'';
-//		str[6] = '\0';
-//	} else
-//		// no, format it as an integer
-//		sprintf(str, "%d", (int)error);
-//    
-//	fprintf(stderr, "Error: %s (%s)\n", operation, str);
-//    
-//	exit(1);
-//}
 
 
 #import "Novocaine.h"
