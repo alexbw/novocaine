@@ -437,37 +437,6 @@ static Novocaine *audioManager = nil;
     
     
     
-    //lets actually set the audio format
-    //    AudioStreamBasicDescription audioFormat;
-    //    memset (&audioFormat, 0, sizeof(audioFormat));
-    //    // Describe format
-    //    audioFormat.mSampleRate			= self.samplingRate;
-    //    audioFormat.mFormatID			= kAudioFormatLinearPCM;
-    //    audioFormat.mFormatFlags		= inputFormat.mFormatFlags;
-    //    audioFormat.mFramesPerPacket	= inputFormat.mFramesPerPacket;
-    //    audioFormat.mChannelsPerFrame	= inputFormat.mChannelsPerFrame;
-    //    audioFormat.mBitsPerChannel		= inputFormat.mBitsPerChannel;
-    //    audioFormat.mBytesPerPacket		= inputFormat.mBytesPerPacket;
-    //    audioFormat.mBytesPerFrame		= inputFormat.mBytesPerFrame;
-    //    
-    //    CheckError( AudioUnitSetProperty(self.inputUnit, 
-    //                                kAudioUnitProperty_StreamFormat, 
-    //                                kAudioUnitScope_Input, 
-    //                                kOutputBus, 
-    //                                &audioFormat, 
-    //                                sizeof(audioFormat)), "Couldn't set stream format on input scope");
-    //    
-    // TODO: necessary?
-    //    outputFormat.mSampleRate = self.samplingRate;
-    //    CheckError( AudioUnitSetProperty(inputUnit, 
-    //                                     kAudioUnitProperty_StreamFormat, 
-    //                                     kAudioUnitScope_Output, 
-    //                                     kInputBus, 
-    //                                     &outputFormat, 
-    //                                     sizeof(outputFormat)), "Couldn't set stream format on output scope");
-    
-    
-    
 #if defined ( USING_IOS )
     UInt32 numFramesPerBuffer;
     size = sizeof(UInt32);
@@ -578,22 +547,7 @@ static Novocaine *audioManager = nil;
     CheckError(AudioUnitInitialize(outputUnit), "Couldn't initialize the output unit");
 #endif
     
-    
-    // Remember:
-    /*
-     -------------------------
-     | i                   o |
-     -- BUS 1 -- from mic --> | n    REMOTE I/O     u | -- BUS 1 -- to app -->
-     | p      AUDIO        t |
-     -- BUS 0 -- from app --> | u       UNIT        p | -- BUS 0 -- to speaker -->	
-     | t                   u |	
-     |                     t |
-     -------------------------
-     */
-    
-    // Initialize the graph
-    
-    
+        
 	
 }
 

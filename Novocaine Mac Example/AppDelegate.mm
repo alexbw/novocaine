@@ -38,9 +38,10 @@
     // ========================================
     // A simple delay that's hard to express without ring buffers
     
+    
     ringBuffer = new RingBuffer(32768, 2); 
     audioManager = [Novocaine audioManager];
-    
+
     
     [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);

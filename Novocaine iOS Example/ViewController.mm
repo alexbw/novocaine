@@ -45,9 +45,10 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+
     ringBuffer = new RingBuffer(32768, 2); 
     audioManager = [Novocaine audioManager];
-    
+
     // Basic playthru example
     [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         float volume = 0.5;
@@ -61,18 +62,111 @@
     }];
     
     
-    /*
-     // Basic Output-only example
      // MAKE SOME NOOOOO OIIIISSSEEE
-     [signalManager setOutputBlock:^(float *newdata, UInt32 numFrames, UInt32 thisNumChannels){
-     for (int i = 0; i < numFrames * thisNumChannels; i++) {
-     newdata[i] = INT16_MAX * (rand() % 100) / 100.0f / 2;
-     }
-     }];
-     */
+    // ==================================================
+//     [audioManager setOutputBlock:^(float *newdata, UInt32 numFrames, UInt32 thisNumChannels)
+//         {
+//             for (int i = 0; i < numFrames * thisNumChannels; i++) {
+//                 newdata[i] = (rand() % 100) / 100.0f / 2;
+//         }
+//     }];
+    
+    
+    // MEASURE SOME DECIBELS!
+    // ==================================================
+//    __block float dbVal = 0.0;
+//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//
+//        vDSP_vsq(data, 1, data, 1, numFrames*numChannels);
+//        float meanVal = 0.0;
+//        vDSP_meanv(data, 1, &meanVal, numFrames*numChannels);
+//
+//        float one = 1.0;
+//        vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
+//        dbVal = dbVal + 0.2*(meanVal - dbVal);
+//        printf("Decibel level: %f\n", dbVal);
+//        
+//    }];
+    
+    // SIGNAL GENERATOR!
+//    __block float frequency = 40.0;
+//    __block float phase = 0.0;
+//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//
+//         float samplingRate = audioManager.samplingRate;
+//         for (int i=0; i < numFrames; ++i)
+//         {
+//             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
+//             {
+//                 float theta = phase * M_PI * 2;
+//                 data[i*numChannels + iChannel] = sin(theta);
+//             }
+//             phase += 1.0 / (samplingRate / frequency);
+//             if (phase > 1.0) phase = -1;
+//         }
+//     }];
+    
+    
+    // DALEK VOICE!
+    // (aka Ring Modulator)
+    
+//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//         ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+//     }];
+//    
+//    __block float frequency = 100.0;
+//    __block float phase = 0.0;
+//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//         ringBuffer->FetchInterleavedData(data, numFrames, numChannels);
+//         
+//         float samplingRate = audioManager.samplingRate;
+//         for (int i=0; i < numFrames; ++i)
+//         {
+//             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
+//             {
+//                 float theta = phase * M_PI * 2;
+//                 data[i*numChannels + iChannel] *= sin(theta);
+//             }
+//             phase += 1.0 / (samplingRate / frequency);
+//             if (phase > 1.0) phase = -1;
+//         }
+//     }];
+    
+    
+    // VOICE-MODULATED OSCILLATOR
+    
+//    __block float magnitude = 0.0;
+//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//         vDSP_rmsqv(data, 1, &magnitude, numFrames*numChannels);
+//     }];
+//    
+//    __block float frequency = 100.0;
+//    __block float phase = 0.0;
+//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//
+//         printf("Magnitude: %f\n", magnitude);
+//         float samplingRate = audioManager.samplingRate;
+//         for (int i=0; i < numFrames; ++i)
+//         {
+//             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
+//             {
+//                 float theta = phase * M_PI * 2;
+//                 data[i*numChannels + iChannel] = magnitude*sin(theta);
+//             }
+//             phase += 1.0 / (samplingRate / (frequency));
+//             if (phase > 1.0) phase = -1;
+//         }
+//     }];
+
+
     
 }
-
+//
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
