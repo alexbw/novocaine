@@ -4,7 +4,7 @@ Really fast audio in iOS and Mac OS X using Audio Units is hard, and will leave 
 
 ### Getting Audio
 	Novocaine *audioManager = [Novocaine audioManager];
-	[audioManager setInputBlock^(float *newAudio, UInt32 numSamples, UInt32 numChannels) {
+	[audioManager setInputBlock:^(float *newAudio, UInt32 numSamples, UInt32 numChannels) {
 		// Now you're getting audio from the microphone every 20 milliseconds or so. How's that for easy?
 		// Audio comes in interleaved, so, 
 		// if numChannels = 2, newAudio[0] is channel 1, newAudio[1] is channel 2, newAudio[2] is channel 1, etc. 
@@ -12,7 +12,7 @@ Really fast audio in iOS and Mac OS X using Audio Units is hard, and will leave 
 
 ### Playing Audio
 	Novocaine *audioManager = [Novocaine audioManager];
-	[audioManager setOutputBlock^(float *audioToPlay, UInt32 numSamples, UInt32 numChannels) {
+	[audioManager setOutputBlock:^(float *audioToPlay, UInt32 numSamples, UInt32 numChannels) {
 		// All you have to do is put your audio into "audioToPlay". 
 	}];
 
