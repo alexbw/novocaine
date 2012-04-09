@@ -1,4 +1,4 @@
-## An analgesic for high-performance audio on the iPhone, iPad and Mac OS X.
+## An analgesic for high-performance audio on iOS and OSX.
 
 Really fast audio in iOS and Mac OS X using Audio Units is hard, and will leave you scarred and bloody. What used to take days can now be done with just a few lines of code.
 
