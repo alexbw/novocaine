@@ -31,6 +31,7 @@
 		FA5526EF152A6466003D9601 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5526EB152A6466003D9601 /* Accelerate.framework */; };
 		FA5526F0152A6466003D9601 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5526EC152A6466003D9601 /* AudioToolbox.framework */; };
 		FA5526F2152A6466003D9601 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5526EE152A6466003D9601 /* CoreAudio.framework */; };
+		FA6EA55F15308FBA00BA555F /* SPL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6EA55E15308FBA00BA555F /* SPL.m */; };
 		FA9FB52A152A6505004B7AA8 /* Novocaine.h in Sources */ = {isa = PBXBuildFile; fileRef = FA552695152A63F6003D9601 /* Novocaine.h */; };
 		FA9FB52B152A6505004B7AA8 /* Novocaine.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA552696152A63F6003D9601 /* Novocaine.mm */; };
 		FA9FB52C152A6505004B7AA8 /* RingBuffer.h in Sources */ = {isa = PBXBuildFile; fileRef = FA552697152A63F6003D9601 /* RingBuffer.h */; };
@@ -77,6 +78,8 @@
 		FA5526EC152A6466003D9601 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		FA5526ED152A6466003D9601 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		FA5526EE152A6466003D9601 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		FA6EA55D15308FBA00BA555F /* SPL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPL.h; sourceTree = "<group>"; };
+		FA6EA55E15308FBA00BA555F /* SPL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPL.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +205,8 @@
 				FA5526E2152A6452003D9601 /* ViewController_iPhone.xib */,
 				FA5526E5152A6452003D9601 /* ViewController_iPad.xib */,
 				FA5526D4152A6452003D9601 /* Supporting Files */,
+				FA6EA55D15308FBA00BA555F /* SPL.h */,
+				FA6EA55E15308FBA00BA555F /* SPL.m */,
 			);
 			path = "Novocaine iOS Example";
 			sourceTree = "<group>";
@@ -327,6 +332,7 @@
 				FA5526DA152A6452003D9601 /* main.m in Sources */,
 				FA5526DE152A6452003D9601 /* AppDelegate.mm in Sources */,
 				FA5526E1152A6452003D9601 /* ViewController.mm in Sources */,
+				FA6EA55F15308FBA00BA555F /* SPL.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

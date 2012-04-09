@@ -25,10 +25,14 @@
 #import <UIKit/UIKit.h>
 #import "Novocaine.h"
 #import "RingBuffer.h"
+#import "SPL.h"
 
 @interface ViewController : UIViewController
 {
     RingBuffer *ringBuffer;
     Novocaine *audioManager;
 }
+
+@property (nonatomic, retain) IBOutlet UISlider *theSlider;
+@property (nonatomic, retain) IBOutlet SPL *splView;
 @end

@@ -29,6 +29,7 @@
 @end
 
 @implementation ViewController
+@synthesize theSlider, splView;
 
 - (void)viewDidLoad
 {
@@ -50,16 +51,16 @@
     audioManager = [Novocaine audioManager];
 
     // Basic playthru example
-    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-        float volume = 0.5;
-        vDSP_vsmul(data, 1, &volume, data, 1, numFrames*numChannels);
-        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-    }];
-    
-    
-    [audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
-        ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
-    }];
+//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//        float volume = 0.5;
+//        vDSP_vsmul(data, 1, &volume, data, 1, numFrames*numChannels);
+//        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+//    }];
+//    
+//    
+//    [audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
+//        ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
+//    }];
     
     
      // MAKE SOME NOOOOO OIIIISSSEEE
@@ -74,26 +75,43 @@
     
     // MEASURE SOME DECIBELS!
     // ==================================================
-//    __block float dbVal = 0.0;
-//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-//
-//        vDSP_vsq(data, 1, data, 1, numFrames*numChannels);
-//        float meanVal = 0.0;
-//        vDSP_meanv(data, 1, &meanVal, numFrames*numChannels);
-//
-//        float one = 1.0;
-//        vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
-//        dbVal = dbVal + 0.2*(meanVal - dbVal);
+    __block float dbVal = 0.0;
+    __block int counter = 0;
+    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+
+        vDSP_vsq(data, 1, data, 1, numFrames*numChannels);
+        float meanVal = 0.0;
+        vDSP_meanv(data, 1, &meanVal, numFrames*numChannels);
+
+        float one = 1.0;
+        vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
+        dbVal = dbVal + 0.2*(meanVal - dbVal);
 //        printf("Decibel level: %f\n", dbVal);
-//        
-//    }];
+//        printf("Volume: %f\n", (dbVal+100.0)/100.0);
+        
+        counter++;
+        
+        if (counter % 5 == 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.splView.volume = (dbVal + 70.0) / 70;
+                [self.splView setNeedsDisplay];
+            });
+        }
+        
+    }];
+    
+    
+    
+    splView.volume = 1.0;
+    [splView setNeedsDisplay];
     
     // SIGNAL GENERATOR!
-//    __block float frequency = 40.0;
+    // ==================================================
+
 //    __block float phase = 0.0;
 //    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
-//
+//         float frequency = powf(2,self.theSlider.value);
 //         float samplingRate = audioManager.samplingRate;
 //         for (int i=0; i < numFrames; ++i)
 //         {
@@ -116,12 +134,11 @@
 //         ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
 //     }];
 //    
-//    __block float frequency = 100.0;
 //    __block float phase = 0.0;
 //    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
 //         ringBuffer->FetchInterleavedData(data, numFrames, numChannels);
-//         
+//         float frequency = powf(2.0, self.theSlider.value);
 //         float samplingRate = audioManager.samplingRate;
 //         for (int i=0; i < numFrames; ++i)
 //         {
@@ -166,7 +183,7 @@
 
     
 }
-//
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {

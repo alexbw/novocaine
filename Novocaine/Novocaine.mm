@@ -520,6 +520,7 @@ static Novocaine *audioManager = nil;
     
     callbackStruct.inputProc = renderCallback;
     callbackStruct.inputProcRefCon = self;
+    
 # if defined ( USING_OSX )    
     CheckError( AudioUnitSetProperty(outputUnit, 
                                      kAudioUnitProperty_SetRenderCallback, 
@@ -543,6 +544,7 @@ static Novocaine *audioManager = nil;
     
     
 	CheckError(AudioUnitInitialize(inputUnit), "Couldn't initialize the output unit");
+    
 #if defined ( USING_OSX )
     CheckError(AudioUnitInitialize(outputUnit), "Couldn't initialize the output unit");
 #endif
@@ -720,16 +722,14 @@ OSStatus inputCallback   (void						*inRefCon,
         return noErr;
     if (sm.inputBlock == nil)
         return noErr;    
-    
-    
-    // Check the current number of channels		
-    // Let's actually grab the audio
+        
+    // Let's grab that audio.
     CheckError( AudioUnitRender(sm.inputUnit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, sm.inputBuffer), "Couldn't render the output unit");
     
     
     // Convert the audio in something manageable
     // For Float32s ... 
-    if ( sm.numBytesPerSample == 4 ) // then we've already got flaots
+    if ( sm.numBytesPerSample == 4 ) // then we've already got floats
     {
         
         float zero = 0.0f;
