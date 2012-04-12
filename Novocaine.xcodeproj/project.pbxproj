@@ -13,7 +13,7 @@
 		FA55268A152A63B6003D9601 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FA552688152A63B6003D9601 /* Credits.rtf */; };
 		FA55268D152A63B6003D9601 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA55268C152A63B6003D9601 /* AppDelegate.mm */; };
 		FA552690152A63B6003D9601 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA55268E152A63B6003D9601 /* MainMenu.xib */; };
-		FA55269A152A63F6003D9601 /* Novocaine.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA552696152A63F6003D9601 /* Novocaine.mm */; };
+		FA55269A152A63F6003D9601 /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = FA552696152A63F6003D9601 /* Novocaine.m */; };
 		FA55269C152A63F6003D9601 /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA552698152A63F6003D9601 /* RingBuffer.mm */; };
 		FA5526A5152A640E003D9601 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA55269D152A6405003D9601 /* Accelerate.framework */; };
 		FA5526A6152A640E003D9601 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA55269E152A6405003D9601 /* AudioToolbox.framework */; };
@@ -31,9 +31,7 @@
 		FA5526EF152A6466003D9601 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5526EB152A6466003D9601 /* Accelerate.framework */; };
 		FA5526F0152A6466003D9601 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5526EC152A6466003D9601 /* AudioToolbox.framework */; };
 		FA5526F2152A6466003D9601 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5526EE152A6466003D9601 /* CoreAudio.framework */; };
-		FA9FB52A152A6505004B7AA8 /* Novocaine.h in Sources */ = {isa = PBXBuildFile; fileRef = FA552695152A63F6003D9601 /* Novocaine.h */; };
-		FA9FB52B152A6505004B7AA8 /* Novocaine.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA552696152A63F6003D9601 /* Novocaine.mm */; };
-		FA9FB52C152A6505004B7AA8 /* RingBuffer.h in Sources */ = {isa = PBXBuildFile; fileRef = FA552697152A63F6003D9601 /* RingBuffer.h */; };
+		FA9FB52B152A6505004B7AA8 /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = FA552696152A63F6003D9601 /* Novocaine.m */; };
 		FA9FB52D152A6505004B7AA8 /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA552698152A63F6003D9601 /* RingBuffer.mm */; };
 /* End PBXBuildFile section */
 
@@ -55,7 +53,7 @@
 		FA55268C152A63B6003D9601 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		FA55268F152A63B6003D9601 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		FA552695152A63F6003D9601 /* Novocaine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Novocaine.h; sourceTree = "<group>"; };
-		FA552696152A63F6003D9601 /* Novocaine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Novocaine.mm; sourceTree = "<group>"; };
+		FA552696152A63F6003D9601 /* Novocaine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Novocaine.m; sourceTree = "<group>"; };
 		FA552697152A63F6003D9601 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
 		FA552698152A63F6003D9601 /* RingBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RingBuffer.mm; sourceTree = "<group>"; };
 		FA55269D152A6405003D9601 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/Accelerate.framework; sourceTree = DEVELOPER_DIR; };
@@ -185,7 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				FA552695152A63F6003D9601 /* Novocaine.h */,
-				FA552696152A63F6003D9601 /* Novocaine.mm */,
+				FA552696152A63F6003D9601 /* Novocaine.m */,
 				FA552697152A63F6003D9601 /* RingBuffer.h */,
 				FA552698152A63F6003D9601 /* RingBuffer.mm */,
 			);
@@ -311,7 +309,7 @@
 			files = (
 				FA552686152A63B6003D9601 /* main.m in Sources */,
 				FA55268D152A63B6003D9601 /* AppDelegate.mm in Sources */,
-				FA55269A152A63F6003D9601 /* Novocaine.mm in Sources */,
+				FA55269A152A63F6003D9601 /* Novocaine.m in Sources */,
 				FA55269C152A63F6003D9601 /* RingBuffer.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -320,9 +318,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA9FB52A152A6505004B7AA8 /* Novocaine.h in Sources */,
-				FA9FB52B152A6505004B7AA8 /* Novocaine.mm in Sources */,
-				FA9FB52C152A6505004B7AA8 /* RingBuffer.h in Sources */,
+				FA9FB52B152A6505004B7AA8 /* Novocaine.m in Sources */,
 				FA9FB52D152A6505004B7AA8 /* RingBuffer.mm in Sources */,
 				FA5526DA152A6452003D9601 /* main.m in Sources */,
 				FA5526DE152A6452003D9601 /* AppDelegate.mm in Sources */,

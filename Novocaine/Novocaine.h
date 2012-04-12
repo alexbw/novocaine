@@ -35,6 +35,10 @@
 #include <Block.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+	
 static void CheckError(OSStatus error, const char *operation)
 {
 	if (error == noErr) return;
@@ -80,6 +84,10 @@ void sessionPropertyListener(void *                  inClientData,
 
 
 void sessionInterruptionListener(void *inClientData, UInt32 inInterruption);
+
+#ifdef __cplusplus
+}
+#endif
 
 typedef void (^OutputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 typedef void (^InputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
