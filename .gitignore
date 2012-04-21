@@ -17,3 +17,5 @@ build/*
 *.pbxuser
 *.xcworkspace
 xcuserdata
+
+Novocaine.xcodeproj/project.xcworkspace/xcuserdata/Alex.xcuserdatad/UserInterfaceState.xcuserstate
