@@ -31,3 +31,6 @@ so the classes that use it will have to be Objective-C++.
 Inside of ViewController.mm are a bunch of tiny little examples I wrote. Uncomment one and see how it sounds.  
 Do note, however, for examples involving play-through, that you should be using headphones. Having the  
 mic and speaker close to each other will produce some gnarly feedback.  
+
+### Want to learn the nitty-gritty of Core Audio?
+If you want to get down and dirty, if you want to get brave and get close to the hardware, I can only point you to the places where I learned how to do this stuff. Chris Adamson and Michael Tyson are two giants in the field of iOS audio, and they each wrote indispensable blog posts ([this is Chris's](http://www.subfurther.com/blog/2009/04/28/an-iphone-core-audio-brain-dump/), [this is Michael's](http://atastypixel.com/blog/using-remoteio-audio-unit/)). Also, Chris Adamson now has a [whole gosh-darned BOOK on Core Audio](http://www.amazon.com/Learning-Core-Audio-Hands-On-Programming/dp/0321636848). I would have done unspeakable things to get my hands on this when I was first starting.
