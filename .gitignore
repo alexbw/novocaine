@@ -15,6 +15,7 @@ build/*
 *.perspective
 *.perspectivev3
 *.pbxuser
+*.pbxproj
 *.xcworkspace
 xcuserdata
 
