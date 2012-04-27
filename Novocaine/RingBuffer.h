@@ -28,6 +28,7 @@
 #define kMaxNumChannels 4
 
 class RingBuffer {
+    
 public:	
 	RingBuffer() {};
 	RingBuffer(SInt64 bufferLength, SInt64 numChannels);

@@ -405,7 +405,6 @@ static Novocaine *audioManager = nil;
     
     
 	// 9/6/10 - check the input device's stream format
-	AudioStreamBasicDescription deviceFormat;
 	CheckError(AudioUnitGetProperty(inputUnit,
 									kAudioUnitProperty_StreamFormat,
 									kAudioUnitScope_Input,

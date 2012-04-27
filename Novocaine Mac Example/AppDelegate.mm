@@ -47,8 +47,6 @@
 //        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
 //    }];
 //    
-//    
-//    
 //    int echoDelay = 11025;
 //    float *holdingBuffer = (float *)calloc(16384, sizeof(float));
 //    [audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
