@@ -167,19 +167,45 @@
     
     // AUDIO FILE READING OHHH YEAHHHH
     // ========================================    
-    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
+//    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
+//
+//    fileReader = [[AudioFileReader alloc] 
+//                  initWithAudioFileURL:inputFileURL 
+//                  samplingRate:audioManager.samplingRate
+//                  numChannels:audioManager.numOutputChannels];
+//    
+//    [fileReader play];
+//    
+//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+//     }];
 
-    fileReader = [[AudioFileReader alloc] 
-                  initWithAudioFileURL:inputFileURL 
-                  samplingRate:audioManager.samplingRate
-                  numChannels:audioManager.numOutputChannels];
     
-    [fileReader play];
+    // AUDIO FILE WRITING YEAH!
+    // ========================================    
+    NSArray *pathComponents = [NSArray arrayWithObjects:
+                               [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject], 
+                               @"My Recording.m4a", 
+                               nil];
+    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
+    NSLog(@"URL: %@", outputFileURL);
     
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-     {
-         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-     }];
+    fileWriter = [[AudioFileWriter alloc] 
+                  initWithAudioFileURL:outputFileURL 
+                  samplingRate:audioManager.samplingRate 
+                  numChannels:audioManager.numInputChannels];
+    
+    
+    __block int counter = 0;
+    audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
+        [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
+        counter += 1;
+        if (counter > 400) { // roughly 5 seconds of audio
+            audioManager.inputBlock = nil;
+            [fileWriter release];
+        }
+    };
 
     
 }

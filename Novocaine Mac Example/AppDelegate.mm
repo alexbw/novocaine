@@ -87,13 +87,11 @@
     
     // AUDIO FILE WRITING YEAH!
     // ========================================    
-    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    NSURL *docURL = [NSURL fileURLWithPath:docDir];
-    NSLog(@"Doc dir: %@", docDir);
-    NSLog(@"Doc URL: %@", docURL);
-    NSArray *pathComponents = [NSArray arrayWithObjects:docDir, @"My Recording.m4a", nil];
+    NSArray *pathComponents = [NSArray arrayWithObjects:
+                               [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject], 
+                               @"My Recording.m4a", 
+                               nil];
     NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
-    NSLog(@"URL: %@", outputFileURL);
 
     fileWriter = [[AudioFileWriter alloc] 
                   initWithAudioFileURL:outputFileURL 
