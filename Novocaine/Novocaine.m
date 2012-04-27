@@ -130,6 +130,9 @@ static Novocaine *audioManager = nil;
 		self.inData  = (float *)calloc(8192, sizeof(float)); // probably more than we'll need
         self.outData = (float *)calloc(8192, sizeof(float));
         
+        self.inputBlock = nil;
+        self.outputBlock = nil;
+        
 #if defined ( USING_OSX )
         self.deviceNames = [[NSMutableArray alloc] initWithCapacity:100]; // more than we'll need
 #endif
@@ -482,6 +485,7 @@ static Novocaine *audioManager = nil;
 			self.inputBuffer->mBuffers[i].mNumberChannels = 1;
 			self.inputBuffer->mBuffers[i].mDataByteSize = bufferSizeBytes;
 			self.inputBuffer->mBuffers[i].mData = malloc(bufferSizeBytes);
+            memset(self.inputBuffer->mBuffers[i].mData, 0, bufferSizeBytes);
 		}
         
 	} else {
@@ -499,7 +503,7 @@ static Novocaine *audioManager = nil;
 		self.inputBuffer->mBuffers[0].mNumberChannels = outputFormat.mChannelsPerFrame;
 		self.inputBuffer->mBuffers[0].mDataByteSize = bufferSizeBytes;
 		self.inputBuffer->mBuffers[0].mData = malloc(bufferSizeBytes);
-        
+        memset(self.inputBuffer->mBuffers[0].mData, 0, bufferSizeBytes);
         
 	}
     
@@ -708,12 +712,7 @@ OSStatus renderCallback (void						*inRefCon,
 {
     
     
-	Novocaine *sm = (Novocaine *)inRefCon;
-    if (!sm.playing)
-        return noErr;
-    if (sm.outputBlock == nil)
-        return noErr;
-    
+	Novocaine *sm = (Novocaine *)inRefCon;    
     float zero = 0.0;
     
     
@@ -721,6 +720,12 @@ OSStatus renderCallback (void						*inRefCon,
         memset(ioData->mBuffers[iBuffer].mData, 0, ioData->mBuffers[iBuffer].mDataByteSize);
     }
     
+    if (!sm.playing)
+        return noErr;
+    if (!sm.outputBlock)
+        return noErr;
+
+
     // Collect data to render from the callbacks
     sm.outputBlock(sm.outData, inNumberFrames, sm.numOutputChannels);
     
@@ -754,6 +759,7 @@ OSStatus renderCallback (void						*inRefCon,
         }
         
     }
+
     return noErr;
     
 }	

@@ -68,22 +68,23 @@
 //    }];
 //    
     
-    // AUDIO FILE READING OHHH YEAHHHH
+    // AUDIO FILE READING COOL!
     // ========================================    
-    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
-    
-    fileReader = [[AudioFileReader alloc] 
-                  initWithAudioFileURL:inputFileURL 
-                  samplingRate:audioManager.samplingRate
-                  numChannels:audioManager.numOutputChannels];
-    
-    [fileReader play];
-    
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-     {
-         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-     }];
-    
+//    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
+//    
+//    fileReader = [[AudioFileReader alloc] 
+//                  initWithAudioFileURL:inputFileURL 
+//                  samplingRate:audioManager.samplingRate
+//                  numChannels:audioManager.numOutputChannels];
+//    
+//    [fileReader play];
+//    
+//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+//     }];
+
+
     
 }
 
