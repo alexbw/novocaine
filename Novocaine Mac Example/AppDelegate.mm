@@ -84,6 +84,32 @@
 //         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
 //     }];
 
+    
+    // AUDIO FILE WRITING YEAH!
+    // ========================================    
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSURL *docURL = [NSURL fileURLWithPath:docDir];
+    NSLog(@"Doc dir: %@", docDir);
+    NSLog(@"Doc URL: %@", docURL);
+    NSArray *pathComponents = [NSArray arrayWithObjects:docDir, @"My Recording.m4a", nil];
+    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
+    NSLog(@"URL: %@", outputFileURL);
+
+    fileWriter = [[AudioFileWriter alloc] 
+                  initWithAudioFileURL:outputFileURL 
+                  samplingRate:audioManager.samplingRate 
+                  numChannels:audioManager.numInputChannels];
+    
+    
+    __block int counter = 0;
+    audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
+        [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
+        counter += 1;
+        if (counter > 10 * audioManager.samplingRate / numChannels) { // 10 seconds of recording
+            audioManager.inputBlock = nil;
+            [fileWriter release];
+        }
+    };
 
     
 }
