@@ -32,10 +32,10 @@
     RingBuffer *ringBuffer;
 }
 
+@property RingBuffer *ringBuffer;
 @property AudioStreamBasicDescription outputFormat;
 @property ExtAudioFileRef inputFile;
 @property UInt32 outputBufferSize;
-//@property RingBuffer *ringBuffer;
 @property float *outputBuffer;
 @property float *holdingBuffer;
 @property UInt32 numSamplesReadPerPacket;
@@ -52,9 +52,9 @@
 
 @implementation AudioFileReader
 
+@synthesize ringBuffer = _ringBuffer;
 @synthesize outputFormat = _outputFormat;
 @synthesize inputFile = _inputFile;
-//@synthesize ringBuffer = _ringBuffer;
 @synthesize outputBuffer = _outputBuffer;
 @synthesize holdingBuffer = _holdingBuffer;
 @synthesize outputBufferSize = _outputBufferSize;
@@ -110,7 +110,6 @@
         // Set a few defaults and presets
         self.samplingRate = thisSamplingRate;
         self.numChannels = thisNumChannels;
-        self.currentTime = 0.0;
         self.latency = .011609977; // 512 samples / ( 44100 samples / sec ) default
         
         
@@ -124,8 +123,6 @@
         _outputFormat.mBytesPerFrame = 4*self.numChannels;
         _outputFormat.mChannelsPerFrame = self.numChannels;
         _outputFormat.mBitsPerChannel = 32;
-        
-//        _outputFormat = thisAudioFormat;
         
         // Apply the format to our file
         ExtAudioFileSetProperty(_inputFile, kExtAudioFileProperty_ClientDataFormat, sizeof(AudioStreamBasicDescription), &_outputFormat);
@@ -150,7 +147,10 @@
     return self;
 }
 
-
+- (void)clearBuffer
+{
+    ringBuffer->Clear();
+}
 
 - (void)bufferNewAudio
 {
@@ -182,6 +182,22 @@
     // Add the new audio to the ring buffer
     ringBuffer->AddNewInterleavedFloatData(self.outputBuffer, framesRead, self.numChannels);
     
+}
+
+- (float)getCurrentTime
+{
+    return self.currentFileTime - ringBuffer->NumUnreadFrames()/self.samplingRate;
+}
+
+- (void)setCurrentTime:(float)thisCurrentTime
+{
+    [self pause];
+    ExtAudioFileSeek(self.inputFile, thisCurrentTime*self.samplingRate);
+    
+    [self clearBuffer];
+    [self bufferNewAudio];
+    
+    [self play];
 }
 
 - (float)getDuration

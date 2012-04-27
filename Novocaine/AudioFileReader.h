@@ -40,7 +40,7 @@
     BOOL playing;
 }
 
-@property float currentTime;
+@property (getter=getCurrentTime, setter=setCurrentTime:) float currentTime;
 @property float duration;
 @property float samplingRate;
 @property UInt32 numChannels;
@@ -55,7 +55,7 @@
 // You use this method to grab audio if you have your own callback.
 // The buffer'll fill at the speed the audio is normally being played.
 - (void)retrieveFreshAudio:(float *)buffer numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels;
-
+//- (float)getCurrentTime;
 - (void)play;
 - (void)pause;
 

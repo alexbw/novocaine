@@ -36,9 +36,10 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     
-    ringBuffer = new RingBuffer(32768, 2); 
-    audioManager = [Novocaine audioManager];
 
+    audioManager = [Novocaine audioManager];
+//    ringBuffer = new RingBuffer(32768, 2); 
+    
 
 // A simple delay that's hard to express without ring buffers
 // ========================================
@@ -70,44 +71,53 @@
     
     // AUDIO FILE READING COOL!
     // ========================================    
-//    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
-//    
-//    fileReader = [[AudioFileReader alloc] 
-//                  initWithAudioFileURL:inputFileURL 
-//                  samplingRate:audioManager.samplingRate
-//                  numChannels:audioManager.numOutputChannels];
-//    
-//    [fileReader play];
-//    
-//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-//     {
-//         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-//     }];
+    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
+    
+    fileReader = [[AudioFileReader alloc] 
+                  initWithAudioFileURL:inputFileURL 
+                  samplingRate:audioManager.samplingRate
+                  numChannels:audioManager.numOutputChannels];
+
+    fileReader.currentTime = 5;    
+    [fileReader play];
+    
+    
+    __block int counter = 0;
+    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+     {
+         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+         counter++;
+         if (counter % 80 == 0)
+             NSLog(@"Time: %f", fileReader.currentTime);
+         
+     }];
+    
+
 
     
     // AUDIO FILE WRITING YEAH!
     // ========================================    
-    NSArray *pathComponents = [NSArray arrayWithObjects:
-                               [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject], 
-                               @"My Recording.m4a", 
-                               nil];
-    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
-
-    fileWriter = [[AudioFileWriter alloc] 
-                  initWithAudioFileURL:outputFileURL 
-                  samplingRate:audioManager.samplingRate 
-                  numChannels:audioManager.numInputChannels];
-    
-    
-    __block int counter = 0;
-    audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
-        [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
-        counter += 1;
-        if (counter > 10 * audioManager.samplingRate / numChannels) { // 10 seconds of recording
-            audioManager.inputBlock = nil;
-            [fileWriter release];
-        }
-    };
+//    NSArray *pathComponents = [NSArray arrayWithObjects:
+//                               [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject], 
+//                               @"My Recording.m4a", 
+//                               nil];
+//    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
+//
+//    fileWriter = [[AudioFileWriter alloc] 
+//                  initWithAudioFileURL:outputFileURL 
+//                  samplingRate:audioManager.samplingRate 
+//                  numChannels:audioManager.numInputChannels];
+//    
+//    
+//    __block int counter = 0;
+//    audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//        [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
+//        counter += 1;
+//        if (counter > 10 * audioManager.samplingRate / numChannels) { // 10 seconds of recording
+//            audioManager.inputBlock = nil;
+//            [fileWriter release];
+//        }
+//    };
 
     
 }
