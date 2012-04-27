@@ -25,10 +25,12 @@
 #import <UIKit/UIKit.h>
 #import "Novocaine.h"
 #import "RingBuffer.h"
+#import "AudioFileReader.h"
 
 @interface ViewController : UIViewController
 {
     RingBuffer *ringBuffer;
     Novocaine *audioManager;
+    AudioFileReader *fileReader;
 }
 @end

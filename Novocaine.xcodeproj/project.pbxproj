@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA0B92E9154ACB100079834E /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0B92E8154ACB100079834E /* AudioFileReader.mm */; };
+		FA0B92EA154ACB100079834E /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0B92E8154ACB100079834E /* AudioFileReader.mm */; };
+		FA2015DD154B02CC00F8D3AC /* TLC.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA2015DC154B02CC00F8D3AC /* TLC.mp3 */; };
+		FA2015DE154B02CC00F8D3AC /* TLC.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA2015DC154B02CC00F8D3AC /* TLC.mp3 */; };
 		FA55267E152A63B6003D9601 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA55265D152A63AE003D9601 /* Cocoa.framework */; };
 		FA552684152A63B6003D9601 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA552682152A63B6003D9601 /* InfoPlist.strings */; };
 		FA552686152A63B6003D9601 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA552685152A63B6003D9601 /* main.m */; };
@@ -36,6 +40,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA0B92E7154ACB100079834E /* AudioFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileReader.h; sourceTree = "<group>"; };
+		FA0B92E8154ACB100079834E /* AudioFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioFileReader.mm; sourceTree = "<group>"; };
+		FA2015DC154B02CC00F8D3AC /* TLC.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = TLC.mp3; sourceTree = "<group>"; };
 		FA552637152A63A4003D9601 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FA552639152A63A4003D9601 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FA55263B152A63A4003D9601 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -186,6 +193,8 @@
 				FA552696152A63F6003D9601 /* Novocaine.m */,
 				FA552697152A63F6003D9601 /* RingBuffer.h */,
 				FA552698152A63F6003D9601 /* RingBuffer.mm */,
+				FA0B92E7154ACB100079834E /* AudioFileReader.h */,
+				FA0B92E8154ACB100079834E /* AudioFileReader.mm */,
 			);
 			path = Novocaine;
 			sourceTree = "<group>";
@@ -207,6 +216,7 @@
 		FA5526D4152A6452003D9601 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FA2015DC154B02CC00F8D3AC /* TLC.mp3 */,
 				FA5526D5152A6452003D9601 /* Novocaine iOS Example-Info.plist */,
 				FA5526D6152A6452003D9601 /* InfoPlist.strings */,
 				FA5526D9152A6452003D9601 /* main.m */,
@@ -287,6 +297,7 @@
 				FA552684152A63B6003D9601 /* InfoPlist.strings in Resources */,
 				FA55268A152A63B6003D9601 /* Credits.rtf in Resources */,
 				FA552690152A63B6003D9601 /* MainMenu.xib in Resources */,
+				FA2015DD154B02CC00F8D3AC /* TLC.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +308,7 @@
 				FA5526D8152A6452003D9601 /* InfoPlist.strings in Resources */,
 				FA5526E4152A6452003D9601 /* ViewController_iPhone.xib in Resources */,
 				FA5526E7152A6452003D9601 /* ViewController_iPad.xib in Resources */,
+				FA2015DE154B02CC00F8D3AC /* TLC.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +323,7 @@
 				FA55268D152A63B6003D9601 /* AppDelegate.mm in Sources */,
 				FA55269A152A63F6003D9601 /* Novocaine.m in Sources */,
 				FA55269C152A63F6003D9601 /* RingBuffer.mm in Sources */,
+				FA0B92E9154ACB100079834E /* AudioFileReader.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +336,7 @@
 				FA5526DA152A6452003D9601 /* main.m in Sources */,
 				FA5526DE152A6452003D9601 /* AppDelegate.mm in Sources */,
 				FA5526E1152A6452003D9601 /* ViewController.mm in Sources */,
+				FA0B92EA154ACB100079834E /* AudioFileReader.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

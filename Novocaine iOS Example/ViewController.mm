@@ -49,17 +49,18 @@
     ringBuffer = new RingBuffer(32768, 2); 
     audioManager = [Novocaine audioManager];
 
+    
     // Basic playthru example
-    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-        float volume = 0.5;
-        vDSP_vsmul(data, 1, &volume, data, 1, numFrames*numChannels);
-        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-    }];
-    
-    
-    [audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
-        ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
-    }];
+//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//        float volume = 0.5;
+//        vDSP_vsmul(data, 1, &volume, data, 1, numFrames*numChannels);
+//        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+//    }];
+//    
+//    
+//    [audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
+//        ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
+//    }];
     
     
      // MAKE SOME NOOOOO OIIIISSSEEE
@@ -162,11 +163,27 @@
 //             if (phase > 1.0) phase = -1;
 //         }
 //     }];
+    
+    
+    // AUDIO FILE READING OHHH YEAHHHH
+    // ========================================    
+    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
 
+    fileReader = [[AudioFileReader alloc] 
+                  initWithAudioFileURL:inputFileURL 
+                  samplingRate:audioManager.samplingRate
+                  numChannels:audioManager.numOutputChannels];
+    
+    [fileReader play];
+    
+    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+     {
+         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+     }];
 
     
 }
-//
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {

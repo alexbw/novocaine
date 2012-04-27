@@ -111,6 +111,8 @@ typedef void (^InputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
     Float64 samplingRate;
     BOOL isInterleaved;
     UInt32 numBytesPerSample;
+    AudioStreamBasicDescription inputFormat;
+    AudioStreamBasicDescription outputFormat;
 	
 	// Audio Processing
     OutputBlock outputBlock;
@@ -144,6 +146,8 @@ typedef void (^InputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 @property Float64 samplingRate;
 @property BOOL isInterleaved;
 @property UInt32 numBytesPerSample;
+@property AudioStreamBasicDescription inputFormat;
+@property AudioStreamBasicDescription outputFormat;
 
 // @property BOOL playThroughEnabled;
 @property BOOL playing;

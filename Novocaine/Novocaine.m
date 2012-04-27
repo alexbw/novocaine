@@ -64,6 +64,9 @@ static Novocaine *audioManager = nil;
 @synthesize inData;
 @synthesize outData;
 @synthesize playing;
+
+@synthesize outputFormat;
+@synthesize inputFormat;
 // @synthesize playThroughEnabled;
 
 #if defined( USING_OSX )
@@ -316,9 +319,6 @@ static Novocaine *audioManager = nil;
     
     // TODO: first query the hardware for desired stream descriptions
     // Check the input stream format
-    AudioStreamBasicDescription inputFormat;
-    AudioStreamBasicDescription outputFormat;
-    
     
 # if defined ( USING_IOS )
     UInt32 size;
@@ -633,75 +633,6 @@ static Novocaine *audioManager = nil;
 	}
     
 }
-
-
-/*
-- (void)playFromFile//:(NSURL *)urlToAudioFile
-{
-    
-	// open the input with ExtAudioFile
-	CFURLRef inputFileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, CFSTR("/Users/Alex/Desktop/PolishGirl.mp3"), kCFURLPOSIXPathStyle, false);
-    ExtAudioFileRef inputFile;
-    
-    
-	CheckError(ExtAudioFileOpenURL(inputFileURL, 
-                                   &inputFile),
-               "ExtAudioFileOpenURL failed");
-    
-    
-    AudioStreamBasicDescription outputFormat = {0};
-    outputFormat.mSampleRate = 44100.0;
-	outputFormat.mFormatID = kAudioFormatLinearPCM;
-    outputFormat.mFormatFlags = kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-	outputFormat.mBytesPerPacket = 4;
-	outputFormat.mFramesPerPacket = 1;
-	outputFormat.mBytesPerFrame = 4;
-	outputFormat.mChannelsPerFrame = 2;
-	outputFormat.mBitsPerChannel = 16;
-    
-    ExtAudioFileSetProperty(inputFile, kExtAudioFileProperty_ClientDataFormat, sizeof(AudioStreamBasicDescription), &outputFormat);
-    
-    UInt32 outputBufferSize = 32 * 1024; // 32 KB is a good starting point
-	UInt32 sizePerPacket = outputFormat.mBytesPerPacket;
-	UInt32 packetsPerBuffer = outputBufferSize / sizePerPacket;
-    
-	// allocate destination buffer
-	SInt16 *outputBuffer = (SInt16 *)malloc(sizeof(SInt16 *) * outputBufferSize);
-    
-    while (1) 
-    {
-        
-        // wrap the destination buffer in an AudioBufferList
-		AudioBufferList convertedData;
-		convertedData.mNumberBuffers = 1;
-		convertedData.mBuffers[0].mNumberChannels = outputFormat.mChannelsPerFrame;
-		convertedData.mBuffers[0].mDataByteSize = outputBufferSize;
-		convertedData.mBuffers[0].mData = outputBuffer;
-        
-        UInt32 frameCount = 512; //packetsPerBuffer;
-        
-		CheckError(ExtAudioFileRead(inputFile,
-                                    &frameCount,
-                                    &convertedData),
-                   "Couldn't read from input file");
-        
-        
-		if (frameCount == 0) {
-			printf ("done reading from file");
-			return;
-		}
-        
-        
-    }
-    
-    
-    
-    
-    
-    ExtAudioFileDispose(inputFile);
-    
-}
-*/
 
 
 #pragma mark - Render Methods

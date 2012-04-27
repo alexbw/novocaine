@@ -24,11 +24,13 @@
 #import <Cocoa/Cocoa.h>
 #import "Novocaine.h"
 #import "RingBuffer.h"
+#import "AudioFileReader.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {
     RingBuffer *ringBuffer;
     Novocaine *audioManager;
+    AudioFileReader *fileReader;
 }
 
 @property (assign) IBOutlet NSWindow *window;
