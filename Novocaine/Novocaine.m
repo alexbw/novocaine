@@ -154,12 +154,16 @@ static Novocaine *audioManager = nil;
 #pragma mark - Block Handling
 - (void)setInputBlock:(InputBlock)newInputBlock
 {
+    InputBlock tmpBlock = inputBlock;
     inputBlock = Block_copy(newInputBlock);
+    Block_release(tmpBlock);
 }
 
 - (void)setOutputBlock:(OutputBlock)newOutputBlock
 {
+    OutputBlock tmpBlock = outputBlock;
     outputBlock = Block_copy(newOutputBlock);
+    Block_release(tmpBlock);
 }
 
 
@@ -786,6 +790,7 @@ void sessionPropertyListener(void *                  inClientData,
     CFStringRef route;
     CheckError( AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &propertySize, &route), "Couldn't check the audio route");
     self.inputRoute = (NSString *)route;
+    CFRelease(route);
     NSLog(@"AudioRoute: %@", self.inputRoute);
     
     

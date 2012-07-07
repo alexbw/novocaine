@@ -58,6 +58,7 @@
 //- (float)getCurrentTime;
 - (void)play;
 - (void)pause;
+- (void)stop;
 
 
 @end

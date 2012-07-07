@@ -25,8 +25,6 @@
 #include "RingBuffer.h"
 
 
-// TODO: teardown function to release mData
-
 RingBuffer::RingBuffer(SInt64 bufferLength, SInt64 numChannels) : 
 mSizeOfBuffer(bufferLength)
 {
@@ -46,6 +44,13 @@ mSizeOfBuffer(bufferLength)
         mNumUnreadFrames[i] = 0;
 	}
 		
+}
+
+RingBuffer::~RingBuffer() 
+{
+    for (int i=0; i<mNumChannels; i++) {
+        free(mData[i]);
+    }
 }
 
 void RingBuffer::AddNewSInt16AudioBuffer(const AudioBuffer aBuffer)

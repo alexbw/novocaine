@@ -32,7 +32,6 @@
     RingBuffer *ringBuffer;
 }
 
-@property RingBuffer *ringBuffer;
 @property AudioStreamBasicDescription outputFormat;
 @property ExtAudioFileRef inputFile;
 @property UInt32 outputBufferSize;
@@ -52,7 +51,6 @@
 
 @implementation AudioFileReader
 
-@synthesize ringBuffer = _ringBuffer;
 @synthesize outputFormat = _outputFormat;
 @synthesize inputFile = _inputFile;
 @synthesize outputBuffer = _outputBuffer;
@@ -275,6 +273,15 @@
     // Pause the dispatch timer for retrieving the MP3 audio
     if (self.callbackTimer) {
         dispatch_suspend(self.callbackTimer);
+        self.playing = FALSE;
+    }
+}
+
+- (void)stop
+{
+    // Release the dispatch timer because it holds a reference to this class instance
+    if (self.callbackTimer) {
+        dispatch_release(self.callbackTimer);
         self.playing = FALSE;
     }
 }
