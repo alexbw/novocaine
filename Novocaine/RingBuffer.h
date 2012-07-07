@@ -41,6 +41,8 @@ public:
 	void AddNewInterleavedFloatData(const float *newData, const SInt64 numFrames, const SInt64 numChannelsHere);
     void FetchInterleavedData(float *outData, SInt64 numFrames, SInt64 numChannels);
 	void FetchFreshData(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride);
+	void FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride);
+    
     void FetchData(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride);
 	SInt64 NumNewFrames(SInt64 lastReadFrame, int iChannel = 0);
     SInt64 NumUnreadFrames(int iChannel = 0) {return mNumUnreadFrames[iChannel]; }
