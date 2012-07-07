@@ -120,14 +120,6 @@
 		FA552628152A63A4003D9601 = {
 			isa = PBXGroup;
 			children = (
-				FA5526EB152A6466003D9601 /* Accelerate.framework */,
-				FA5526EC152A6466003D9601 /* AudioToolbox.framework */,
-				FA5526ED152A6466003D9601 /* AudioUnit.framework */,
-				FA5526EE152A6466003D9601 /* CoreAudio.framework */,
-				FA55269D152A6405003D9601 /* Accelerate.framework */,
-				FA55269E152A6405003D9601 /* AudioToolbox.framework */,
-				FA55269F152A6405003D9601 /* AudioUnit.framework */,
-				FA5526A0152A6405003D9601 /* CoreAudio.framework */,
 				FA552694152A63F6003D9601 /* Novocaine */,
 				FA55267F152A63B6003D9601 /* Novocaine Mac Example */,
 				FA5526D3152A6452003D9601 /* Novocaine iOS Example */,
@@ -148,9 +140,17 @@
 		FA552636152A63A4003D9601 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FA552637152A63A4003D9601 /* UIKit.framework */,
-				FA552639152A63A4003D9601 /* Foundation.framework */,
+				FA5526EB152A6466003D9601 /* Accelerate.framework */,
+				FA55269D152A6405003D9601 /* Accelerate.framework */,
+				FA5526EC152A6466003D9601 /* AudioToolbox.framework */,
+				FA55269E152A6405003D9601 /* AudioToolbox.framework */,
+				FA5526ED152A6466003D9601 /* AudioUnit.framework */,
+				FA55269F152A6405003D9601 /* AudioUnit.framework */,
+				FA5526EE152A6466003D9601 /* CoreAudio.framework */,
+				FA5526A0152A6405003D9601 /* CoreAudio.framework */,
 				FA55263B152A63A4003D9601 /* CoreGraphics.framework */,
+				FA552639152A63A4003D9601 /* Foundation.framework */,
+				FA552637152A63A4003D9601 /* UIKit.framework */,
 				FA55265D152A63AE003D9601 /* Cocoa.framework */,
 				FA55265F152A63AE003D9601 /* Other Frameworks */,
 			);
@@ -193,8 +193,8 @@
 		FA552694152A63F6003D9601 /* Novocaine */ = {
 			isa = PBXGroup;
 			children = (
-				FA2015EC154B0DA700F8D3AC /* AudioFileWriter.m */,
 				FA2015EB154B0D9B00F8D3AC /* AudioFileWriter.h */,
+				FA2015EC154B0DA700F8D3AC /* AudioFileWriter.m */,
 				FA552695152A63F6003D9601 /* Novocaine.h */,
 				FA552696152A63F6003D9601 /* Novocaine.m */,
 				FA552697152A63F6003D9601 /* RingBuffer.h */,

@@ -32,7 +32,7 @@ class RingBuffer {
 public:	
 	RingBuffer() {};
 	RingBuffer(SInt64 bufferLength, SInt64 numChannels);
-	~RingBuffer() {};
+	~RingBuffer();
 	
 	void AddNewSInt16AudioBuffer(const AudioBuffer aBuffer);
 	void AddNewSInt16Data(const SInt16 *newData, const SInt64 numFrames, const SInt64 whichChannel);
