@@ -41,7 +41,7 @@
 }
 
 @property (getter=getCurrentTime, setter=setCurrentTime:) float currentTime;
-@property float duration;
+@property (readonly, getter=getDuration) float duration;
 @property float samplingRate;
 @property UInt32 numChannels;
 @property float latency;

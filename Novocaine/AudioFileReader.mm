@@ -180,6 +180,13 @@
     // Add the new audio to the ring buffer
     ringBuffer->AddNewInterleavedFloatData(self.outputBuffer, framesRead, self.numChannels);
     
+    if ((self.currentFileTime - self.duration) < 0.01 && framesRead == 0) {
+        self.currentTime = 0.0f;
+        [self pause];
+        ringBuffer->Clear();
+    }
+    
+    
 }
 
 - (float)getCurrentTime
@@ -187,15 +194,18 @@
     return self.currentFileTime - ringBuffer->NumUnreadFrames()/self.samplingRate;
 }
 
+
 - (void)setCurrentTime:(float)thisCurrentTime
 {
-    [self pause];
-    ExtAudioFileSeek(self.inputFile, thisCurrentTime*self.samplingRate);
-    
-    [self clearBuffer];
-    [self bufferNewAudio];
-    
-    [self play];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self pause];
+        ExtAudioFileSeek(self.inputFile, thisCurrentTime*self.samplingRate);
+        
+        [self clearBuffer];
+        [self bufferNewAudio];
+        
+        [self play];
+    });
 }
 
 - (float)getDuration
@@ -219,32 +229,31 @@
     if (!self.callbackTimer)
     {
         self.callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-    }
-    
-    if (self.callbackTimer)
-    {
         UInt32 numSamplesPerCallback = (UInt32)( self.latency * self.samplingRate );
         dispatch_source_set_timer(self.callbackTimer, dispatch_walltime(NULL, 0), self.latency*NSEC_PER_SEC, 0);
         dispatch_source_set_event_handler(self.callbackTimer, ^{
             
+            if (self.playing) {
             
-            if (self.readerBlock) {
-                // Suck some audio down from our ring buffer
-                [self retrieveFreshAudio:self.holdingBuffer numFrames:numSamplesPerCallback numChannels:self.numChannels];
-            
-                // Call out with the audio that we've got.
-                self.readerBlock(self.holdingBuffer, numSamplesPerCallback, self.numChannels);
+                if (self.readerBlock) {
+                    // Suck some audio down from our ring buffer
+                    [self retrieveFreshAudio:self.holdingBuffer numFrames:numSamplesPerCallback numChannels:self.numChannels];
+                
+                    // Call out with the audio that we've got.
+                    self.readerBlock(self.holdingBuffer, numSamplesPerCallback, self.numChannels);
+                }
+                
+                // Asynchronously fill up the buffer (if it needs filling)
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self bufferNewAudio];
+                });
+                
             }
-
-            // Asynchronously fill up the buffer (if it needs filling)
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self bufferNewAudio];
-            });
             
          });
-
+        
+        dispatch_resume(self.callbackTimer);
     }
-    
 }
 
 
@@ -257,12 +266,9 @@
 - (void)play;
 {
 
-    // Configure (or if necessary, create and start) the timer for retrieving MP3 audio
-    [self configureReaderCallback];
-    
-    if (!self.playing)
-    {
-        dispatch_resume(self.callbackTimer);
+    // Configure (or if necessary, create and start) the timer for retrieving audio
+    if (!self.playing) {
+        [self configureReaderCallback];
         self.playing = TRUE;
     }
 
@@ -271,18 +277,17 @@
 - (void)pause
 {
     // Pause the dispatch timer for retrieving the MP3 audio
-    if (self.callbackTimer) {
-        dispatch_suspend(self.callbackTimer);
-        self.playing = FALSE;
-    }
+    self.playing = FALSE;
 }
 
 - (void)stop
 {
     // Release the dispatch timer because it holds a reference to this class instance
+    [self pause];
     if (self.callbackTimer) {
+        dispatch_suspend(self.callbackTimer);
+        dispatch_suspend(self.callbackTimer);
         dispatch_release(self.callbackTimer);
-        self.playing = FALSE;
     }
 }
 
