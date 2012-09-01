@@ -167,47 +167,47 @@
     
     // AUDIO FILE READING OHHH YEAHHHH
     // ========================================    
-    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
-
-    fileReader = [[AudioFileReader alloc] 
-                  initWithAudioFileURL:inputFileURL 
-                  samplingRate:audioManager.samplingRate
-                  numChannels:audioManager.numOutputChannels];
-    
-    [fileReader play];
-    fileReader.currentTime = 30.0;
-    
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-     {
-         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-         NSLog(@"Time: %f", fileReader.currentTime);
-     }];
+//    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
+//
+//    fileReader = [[AudioFileReader alloc] 
+//                  initWithAudioFileURL:inputFileURL 
+//                  samplingRate:audioManager.samplingRate
+//                  numChannels:audioManager.numOutputChannels];
+//    
+//    [fileReader play];
+//    fileReader.currentTime = 30.0;
+//    
+//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+//         NSLog(@"Time: %f", fileReader.currentTime);
+//     }];
 
     
     // AUDIO FILE WRITING YEAH!
     // ========================================    
-//    NSArray *pathComponents = [NSArray arrayWithObjects:
-//                               [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject], 
-//                               @"My Recording.m4a", 
-//                               nil];
-//    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
-//    NSLog(@"URL: %@", outputFileURL);
-//    
-//    fileWriter = [[AudioFileWriter alloc] 
-//                  initWithAudioFileURL:outputFileURL 
-//                  samplingRate:audioManager.samplingRate 
-//                  numChannels:audioManager.numInputChannels];
-//    
-//    
-//    __block int counter = 0;
-//    audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
-//        [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
-//        counter += 1;
-//        if (counter > 400) { // roughly 5 seconds of audio
-//            audioManager.inputBlock = nil;
-//            [fileWriter release];
-//        }
-//    };
+    NSArray *pathComponents = [NSArray arrayWithObjects:
+                               [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject], 
+                               @"My Recording.m4a", 
+                               nil];
+    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
+    NSLog(@"URL: %@", outputFileURL);
+    
+    fileWriter = [[AudioFileWriter alloc] 
+                  initWithAudioFileURL:outputFileURL 
+                  samplingRate:audioManager.samplingRate 
+                  numChannels:audioManager.numInputChannels];
+    
+    
+    __block int counter = 0;
+    audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
+        [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
+        counter += 1;
+        if (counter > 400) { // roughly 5 seconds of audio
+            audioManager.inputBlock = nil;
+            [fileWriter release];
+        }
+    };
 
     
 }
