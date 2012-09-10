@@ -25,6 +25,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 #import "AudioFileWriter.h"
+#import <pthread.h>
 
 @interface AudioFileWriter()
 
@@ -42,6 +43,8 @@
 
 
 @implementation AudioFileWriter
+
+static pthread_mutex_t outputAudioFileLock;
 
 @synthesize outputFormat = _outputFormat;
 @synthesize outputFile = _outputFile;
@@ -79,11 +82,11 @@
         // Zero-out our timer, so we know we're not using our callback yet
         self.callbackTimer = nil;
         
-
+        
         // Open a reference to the audio file
         self.audioFileURL = urlToAudioFile;
         CFURLRef audioFileRef = (CFURLRef)self.audioFileURL;
-
+        
         AudioStreamBasicDescription outputFileDesc = {44100.0, kAudioFormatMPEG4AAC, 0, 0, 1024, 0, thisNumChannels, 0, 0};
         
         CheckError(ExtAudioFileCreateWithURL(audioFileRef, kAudioFileM4AType, &outputFileDesc, NULL, kAudioFileFlags_EraseFile, &_outputFile), "Creating file");
@@ -115,8 +118,15 @@
         self.outputBuffer = (float *)calloc(2*self.samplingRate, sizeof(float));
         self.holdingBuffer = (float *)calloc(2*self.samplingRate, sizeof(float));
         
-        CheckError( ExtAudioFileWriteAsync(self.outputFile, 0, NULL), "Initializing audio file");
-                
+        pthread_mutex_init(&outputAudioFileLock, NULL);
+        
+        // mutex here //
+        if( 0 == pthread_mutex_trylock( &outputAudioFileLock ) ) 
+        {       
+            CheckError( ExtAudioFileWriteAsync(self.outputFile, 0, NULL), "Initializing audio file");
+        }
+        pthread_mutex_unlock( &outputAudioFileLock );
+        
     }
     return self;
 }
@@ -132,13 +142,17 @@
     outgoingAudio.mBuffers[0].mDataByteSize = numIncomingBytes;
     outgoingAudio.mBuffers[0].mData = self.outputBuffer;
     
-    ExtAudioFileWriteAsync(self.outputFile, thisNumFrames, &outgoingAudio);
+    if( 0 == pthread_mutex_trylock( &outputAudioFileLock ) ) 
+    {       
+        ExtAudioFileWriteAsync(self.outputFile, thisNumFrames, &outgoingAudio);
+    }
+    pthread_mutex_unlock( &outputAudioFileLock );
     
     // Figure out where we are in the file
     SInt64 frameOffset = 0;
     ExtAudioFileTell(self.outputFile, &frameOffset);
     self.currentTime = (float)frameOffset / self.samplingRate;
-
+    
 }
 
 
@@ -180,9 +194,9 @@
                 
                 // Get audio from the block supplier
                 [self writeNewAudio:self.outputBuffer numFrames:numSamplesPerCallback numChannels:self.numChannels];
-
+                
             }
-                        
+            
         });
         
     }
@@ -208,7 +222,10 @@
 - (void)stop
 {
     // Close the
+    pthread_mutex_lock( &outputAudioFileLock );
     ExtAudioFileDispose(self.outputFile);
+    pthread_mutex_unlock( &outputAudioFileLock );
+    self.recording = FALSE;
 }
 
 - (void)pause
@@ -223,3 +240,4 @@
 
 
 @end
+
