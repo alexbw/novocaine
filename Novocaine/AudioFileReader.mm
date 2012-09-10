@@ -181,8 +181,11 @@
     ringBuffer->AddNewInterleavedFloatData(self.outputBuffer, framesRead, self.numChannels);
     
     if ((self.currentFileTime - self.duration) < 0.01 && framesRead == 0) {
-        self.currentTime = 0.0f;
-        [self pause];
+        // modified to allow for auto-stopping. //
+        // Need to change your output block to check for [fileReader playing] and nuke your fileReader if it is   //
+        // not playing and not paused, on the next frame. Otherwise, the sound clip's final buffer is not played. //
+//        self.currentTime = 0.0f;
+        [self stop];
         ringBuffer->Clear();
     }
     
@@ -285,8 +288,6 @@
     // Release the dispatch timer because it holds a reference to this class instance
     [self pause];
     if (self.callbackTimer) {
-        dispatch_suspend(self.callbackTimer);
-        dispatch_suspend(self.callbackTimer);
         dispatch_release(self.callbackTimer);
     }
 }
