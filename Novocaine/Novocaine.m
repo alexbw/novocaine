@@ -664,6 +664,7 @@ OSStatus inputCallback   (void						*inRefCon,
     
     // Check the current number of channels		
     // Let's actually grab the audio
+    if( inNumberFrames == 471 )
     CheckError( AudioUnitRender(sm.inputUnit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, sm.inputBuffer), "Couldn't render the output unit");
     
     
