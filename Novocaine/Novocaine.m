@@ -664,6 +664,12 @@ OSStatus inputCallback   (void						*inRefCon,
     
     // Check the current number of channels		
     // Let's actually grab the audio
+#if TARGET_IPHONE_SIMULATOR
+    // this is a workaround for an issue with core audio on the simulator, //
+    //  likely due to 44100 vs 48000 difference in OSX //
+    if( inNumberFrames == 471 )
+        inNumberFrames = 470;
+#endif
     CheckError( AudioUnitRender(sm.inputUnit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, sm.inputBuffer), "Couldn't render the output unit");
     
     
