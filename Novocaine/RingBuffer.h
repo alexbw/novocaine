@@ -61,7 +61,7 @@ public:
 	float Max(const SInt64 whichChannel = 0);
 	float Min(const SInt64 whichChannel = 0);
 	
-private:
+protected:
 	SInt64 mLastWrittenIndex[kMaxNumChannels];
 	SInt64 mLastReadIndex[kMaxNumChannels];
     SInt64 mNumUnreadFrames[kMaxNumChannels];
