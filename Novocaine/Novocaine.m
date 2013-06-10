@@ -329,18 +329,28 @@ static Novocaine *audioManager = nil;
     
     UInt32 size = sizeof(AudioDeviceID);
     if(self.defaultInputDeviceID == kAudioDeviceUnknown)
-    {  
+    {
+        AudioObjectPropertyAddress propertyAddress;
+        propertyAddress.mSelector = kAudioHardwarePropertyDefaultInputDevice;
+        propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+        propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+        
         AudioDeviceID thisDeviceID;            
         UInt32 propsize = sizeof(AudioDeviceID);
-        CheckError(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultInputDevice, &propsize, &thisDeviceID), "Could not get the default device");
+        CheckError(AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &propsize, &thisDeviceID), "Could not get the default device");
         self.defaultInputDeviceID = thisDeviceID;
     }
     
     if (self.defaultOutputDeviceID == kAudioDeviceUnknown)
     {
+        AudioObjectPropertyAddress propertyAddress;
+        propertyAddress.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
+        propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+        propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+        
         AudioDeviceID thisDeviceID;            
         UInt32 propsize = sizeof(AudioDeviceID);
-        CheckError(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &propsize, &thisDeviceID), "Could not get the default device");
+        CheckError(AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &propsize, &thisDeviceID), "Could not get the default device");
         self.defaultOutputDeviceID = thisDeviceID;
         
     }
