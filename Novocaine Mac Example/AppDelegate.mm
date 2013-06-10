@@ -36,11 +36,9 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     
-
     self.audioManager = [Novocaine audioManager];
     self.ringBuffer = new RingBuffer(32768, 2);
     
-
     __weak AppDelegate * wself = self;
 
 // A simple delay that's hard to express without ring buffers

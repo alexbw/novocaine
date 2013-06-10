@@ -61,7 +61,22 @@ static Novocaine *audioManager = nil;
 @property (nonatomic, assign, readwrite) float *inData;
 @property (nonatomic, assign, readwrite) float *outData;
 
+@property (nonatomic, copy) NovocaineOutputBlock outputBlock;
+@property (nonatomic, copy) NovocaineInputBlock inputBlock;
+
+#if defined (USING_OSX)
+@property (nonatomic, assign) AudioDeviceID *deviceIDs;
+@property (nonatomic, strong) NSMutableArray *deviceNames;
+@property (nonatomic, assign) AudioDeviceID defaultInputDeviceID;
+@property (nonatomic, strong) NSString *defaultInputDeviceName;
+@property (nonatomic, assign) AudioDeviceID defaultOutputDeviceID;
+@property (nonatomic, strong) NSString *defaultOutputDeviceName;
+- (void)enumerateAudioDevices;
+#endif
+
 - (void)setupAudio;
+- (void)ifAudioInputIsAvailableThenSetupAudioSession;
+
 - (NSString *)applicationDocumentsDirectory;
 
 - (void)freeBuffers;
@@ -557,8 +572,6 @@ static Novocaine *audioManager = nil;
     CheckError(AudioUnitInitialize(_outputUnit), "Couldn't initialize the output unit");
 #endif
     
-        
-	
 }
 
 #if defined (USING_OSX)

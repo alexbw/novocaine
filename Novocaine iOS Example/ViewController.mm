@@ -169,22 +169,22 @@
     
     // AUDIO FILE READING OHHH YEAHHHH
     // ========================================    
-//    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
-//
-//        self.fileReader = [[AudioFileReader alloc]
-//                           initWithAudioFileURL:inputFileURL 
-//                           samplingRate:self.audioManager.samplingRate
-//                           numChannels:self.audioManager.numOutputChannels];
-//    
-//    [self.fileReader play];
-//    self.fileReader.currentTime = 30.0;
-//    
-//    
-//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-//     {
-//         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-//         NSLog(@"Time: %f", wself.fileReader.currentTime);
-//     }];
+    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
+
+        self.fileReader = [[AudioFileReader alloc]
+                           initWithAudioFileURL:inputFileURL 
+                           samplingRate:self.audioManager.samplingRate
+                           numChannels:self.audioManager.numOutputChannels];
+    
+    [self.fileReader play];
+    self.fileReader.currentTime = 30.0;
+    
+    
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+     {
+         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+         NSLog(@"Time: %f", wself.fileReader.currentTime);
+     }];
 
     
     // AUDIO FILE WRITING YEAH!

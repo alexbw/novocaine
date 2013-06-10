@@ -34,7 +34,7 @@
 @property (nonatomic, assign) UInt32 numChannels;
 @property (nonatomic, assign) float latency;
 @property (nonatomic, copy) NSURL *audioFileURL;
-@property (nonatomic, copy) InputBlock readerBlock;
+@property (nonatomic, copy) NovocaineInputBlock readerBlock;
 @property (nonatomic, assign) BOOL playing;
 
 

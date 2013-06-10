@@ -89,8 +89,8 @@ void sessionInterruptionListener(void *inClientData, UInt32 inInterruption);
 }
 #endif
 
-typedef void (^OutputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
-typedef void (^InputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
+typedef void (^NovocaineOutputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
+typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 
 #if defined (USING_IOS)
 @interface Novocaine : NSObject <UIAlertViewDelegate>
@@ -98,11 +98,23 @@ typedef void (^InputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 @interface Novocaine : NSObject
 #endif
 
-@property (nonatomic, copy)     OutputBlock outputBlock;
-@property (nonatomic, copy)     InputBlock inputBlock;
-@property (nonatomic, copy)     NSString *inputRoute;
+// ------ These properties/methods are used for configuration -------
 
-// these should be readonly - no need for public access
+@property (nonatomic, copy) NSString *inputRoute;
+
+// ND: Exposing the block setters this way will create the correct block signature for auto-complete.
+// These will map to "copy" property setters in class continuation in source file
+- (void)setInputBlock:(NovocaineInputBlock)block;
+- (void)setOutputBlock:(NovocaineOutputBlock)block;
+
+// ND: Not sure if there is a need to reference these elsewhere, but here are the getters just in case
+// These will also map to the property getters in the class continuation.
+- (NovocaineInputBlock)inputBlock;
+- (NovocaineOutputBlock)outputBlock;
+
+// ------------------------------------------------------------------
+
+// these should be readonly in public interface - no need for public write access
 @property (nonatomic, assign, readonly) AudioUnit inputUnit;
 @property (nonatomic, assign, readonly) AudioUnit outputUnit;
 @property (nonatomic, assign, readonly) AudioBufferList *inputBuffer;
@@ -115,20 +127,8 @@ typedef void (^InputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 @property (nonatomic, assign, readonly) AudioStreamBasicDescription inputFormat;
 @property (nonatomic, assign, readonly) AudioStreamBasicDescription outputFormat;
 @property (nonatomic, assign, readonly) BOOL playing;
-@property (nonatomic, assign, readonly) float *inData;
-@property (nonatomic, assign, readonly) float *outData;
 
 // @property BOOL playThroughEnabled;
-
-#if defined (USING_OSX)
-@property (nonatomic, assign) AudioDeviceID *deviceIDs;
-@property (nonatomic, strong) NSMutableArray *deviceNames;
-@property (nonatomic, assign) AudioDeviceID defaultInputDeviceID;
-@property (nonatomic, strong) NSString *defaultInputDeviceName;
-@property (nonatomic, assign) AudioDeviceID defaultOutputDeviceID;
-@property (nonatomic, strong) NSString *defaultOutputDeviceName;
-- (void)enumerateAudioDevices;
-#endif
 
 
 // Singleton methods
@@ -137,8 +137,6 @@ typedef void (^InputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 // Audio Unit methods
 - (void)play;
 - (void)pause;
-- (void)setupAudio;
-- (void)ifAudioInputIsAvailableThenSetupAudioSession;
 
 #if defined ( USING_IOS )
 - (void)checkSessionProperties;
