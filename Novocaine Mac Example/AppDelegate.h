@@ -29,10 +29,10 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
-@property (nonatomic, assign) RingBuffer *ringBuffer;
 @property (nonatomic, strong) Novocaine *audioManager;
 @property (nonatomic, strong) AudioFileReader *fileReader;
 @property (nonatomic, strong) AudioFileWriter *fileWriter;
+@property (nonatomic, assign) RingBuffer * ringBuffer;
 
 @property (nonatomic, weak) IBOutlet NSWindow *window;
 

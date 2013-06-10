@@ -26,9 +26,16 @@
 
 @interface ViewController ()
 
+@property (nonatomic, assign) RingBuffer *ringBuffer;
+
 @end
 
 @implementation ViewController
+
+- (void)dealloc
+{
+    delete self.ringBuffer;
+}
 
 - (void)viewDidLoad
 {

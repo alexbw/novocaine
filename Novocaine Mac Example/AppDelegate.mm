@@ -37,13 +37,14 @@
 {
     
     self.audioManager = [Novocaine audioManager];
+    
     self.ringBuffer = new RingBuffer(32768, 2);
     
     __weak AppDelegate * wself = self;
 
 // A simple delay that's hard to express without ring buffers
 // ========================================
-//
+
 //    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
 //        wself.ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
 //    }];
@@ -67,7 +68,7 @@
 //        vDSP_vsmul(holdingBuffer, 1, &volume, holdingBuffer, 1, numFrames*numChannels);
 //        vDSP_vadd(holdingBuffer, 1, outData, 1, outData, 1, numFrames*numChannels);
 //    }];
-    
+//    
     
     // AUDIO FILE READING COOL!
     // ========================================    
@@ -94,8 +95,6 @@
          
      }];
     
-
-
     
     // AUDIO FILE WRITING YEAH!
     // ========================================    

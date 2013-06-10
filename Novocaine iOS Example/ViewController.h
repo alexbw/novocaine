@@ -30,7 +30,6 @@
 
 @interface ViewController : UIViewController
 
-@property (nonatomic, assign) RingBuffer *ringBuffer;
 @property (nonatomic, strong) Novocaine *audioManager;
 @property (nonatomic, strong) AudioFileReader *fileReader;
 @property (nonatomic, strong) AudioFileWriter *fileWriter;

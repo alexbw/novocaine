@@ -28,14 +28,19 @@
 
 @interface AudioFileReader : NSObject
 
+// ----- Read-write ------
+
 @property (nonatomic, assign, getter=getCurrentTime, setter=setCurrentTime:) float currentTime;
-@property (nonatomic, assign, readonly, getter=getDuration) float duration;
-@property (nonatomic, assign) float samplingRate;
-@property (nonatomic, assign) UInt32 numChannels;
-@property (nonatomic, assign) float latency;
 @property (nonatomic, copy) NSURL *audioFileURL;
 @property (nonatomic, copy) NovocaineInputBlock readerBlock;
-@property (nonatomic, assign) BOOL playing;
+
+// ----- Read-only ------
+
+@property (nonatomic, assign, readonly, getter=getDuration) float duration;
+@property (nonatomic, assign, readonly) float samplingRate;
+@property (nonatomic, assign, readonly) UInt32 numChannels;
+@property (nonatomic, assign, readonly) float latency;
+@property (nonatomic, assign, readonly) BOOL playing;
 
 
 - (id)initWithAudioFileURL:(NSURL *)urlToAudioFile samplingRate:(float)thisSamplingRate numChannels:(UInt32)thisNumChannels;

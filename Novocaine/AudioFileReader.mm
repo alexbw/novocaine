@@ -32,6 +32,13 @@
     RingBuffer *ringBuffer;
 }
 
+// redeclaration as readwrite in class continuation
+@property (nonatomic, assign, readwrite, getter=getDuration) float duration;
+@property (nonatomic, assign, readwrite) float samplingRate;
+@property (nonatomic, assign, readwrite) UInt32 numChannels;
+@property (nonatomic, assign, readwrite) float latency;
+@property (nonatomic, assign, readwrite) BOOL playing;
+
 @property (nonatomic, assign) AudioStreamBasicDescription outputFormat;
 @property (nonatomic, assign) ExtAudioFileRef inputFile;
 @property (nonatomic, assign) UInt32 outputBufferSize;
@@ -45,7 +52,6 @@
 - (void)bufferNewAudio;
 
 @end
-
 
 
 @implementation AudioFileReader
@@ -78,7 +84,6 @@
         
         // Zero-out our timer, so we know we're not using our callback yet
         self.callbackTimer = nil;
-        
         
         // Open a reference to the audio file
         self.audioFileURL = urlToAudioFile;
