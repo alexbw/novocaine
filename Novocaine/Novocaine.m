@@ -61,9 +61,10 @@ static Novocaine *audioManager = nil;
 @property (nonatomic, assign, readwrite) float *inData;
 @property (nonatomic, assign, readwrite) float *outData;
 
-
 - (void)setupAudio;
 - (NSString *)applicationDocumentsDirectory;
+
+- (void)freeBuffers;
 
 @end
 
@@ -92,11 +93,12 @@ static Novocaine *audioManager = nil;
     return nil; // on subsequent allocation attempts return nil
 }
 
-- (id)copyWithZone:(NSZone *)zone
-{
-    // TODO: this should probably actually copy property values...
-    return self;
-}
+// ND: If NSCopying protocol is to be supported, it should be declared with class and done correctly. Disabled for now.
+
+//- (id)copyWithZone:(NSZone *)zone
+//{
+//    return self;
+//}
 
 - (id)init
 {
@@ -129,7 +131,32 @@ static Novocaine *audioManager = nil;
 
 - (void)dealloc
 {
-    // TODO: Clean up allocated memory from calloc, malloc, new
+    free(self.inData);
+    free(self.outData);
+    
+#if defined (USING_OSX)
+    if (self.deviceIDs){
+        free(self.deviceIDs);
+    }
+#endif
+    
+    [self freeBuffers];
+}
+
+- (void)freeBuffers
+{
+    if (self.inputBuffer){
+        
+		for(UInt32 i =0; i< self.inputBuffer->mNumberBuffers ; i++) {
+
+			if(self.inputBuffer->mBuffers[i].mData){
+                free(self.inputBuffer->mBuffers[i].mData);
+            }
+		}
+        
+        free(self.inputBuffer);
+        self.inputBuffer = NULL;
+    }
 }
 
 
