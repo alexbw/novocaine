@@ -33,6 +33,7 @@
 }
 
 // redeclaration as readwrite in class continuation
+@property (nonatomic, copy, readwrite)   NSURL *audioFileURL;
 @property (nonatomic, assign, readwrite, getter=getDuration) float duration;
 @property (nonatomic, assign, readwrite) float samplingRate;
 @property (nonatomic, assign, readwrite) UInt32 numChannels;
@@ -252,7 +253,7 @@
 }
 
 
-- (void)play;
+- (void)play
 {
 
     // Configure (or if necessary, create and start) the timer for retrieving audio

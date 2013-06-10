@@ -29,6 +29,15 @@
 
 @interface AudioFileWriter()
 
+// redeclare as readwrite in class continuation
+@property (nonatomic, assign, getter=getDuration, readwrite) float currentTime;
+@property (nonatomic, assign, getter=getDuration, readwrite) float duration;
+@property (nonatomic, assign, readwrite) float samplingRate;
+@property (nonatomic, assign, readwrite) UInt32 numChannels;
+@property (nonatomic, assign, readwrite) float latency;
+@property (nonatomic, copy, readwrite)   NSURL *audioFileURL;
+@property (nonatomic, assign, readwrite) BOOL recording;
+
 @property (nonatomic, assign) AudioStreamBasicDescription outputFormat;
 @property (nonatomic, assign) ExtAudioFileRef outputFile;
 @property (nonatomic, assign) UInt32 outputBufferSize;
@@ -36,7 +45,6 @@
 @property (nonatomic, assign) float *holdingBuffer;
 @property (nonatomic, assign) SInt64 currentFileTime;
 @property (nonatomic, assign) dispatch_source_t callbackTimer;
-@property (nonatomic, assign, readwrite) float currentTime;
 
 @end
 
