@@ -26,18 +26,11 @@
 
 @implementation AppDelegate
 
-@synthesize window = _window;
-
-- (void)dealloc
-{
-    [super dealloc];
-}
-
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     
 
-    audioManager = [Novocaine audioManager];
+    self.audioManager = [Novocaine audioManager];
 //    ringBuffer = new RingBuffer(32768, 2); 
     
 
@@ -73,22 +66,25 @@
     // ========================================    
     NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
     
-    fileReader = [[AudioFileReader alloc] 
-                  initWithAudioFileURL:inputFileURL 
-                  samplingRate:audioManager.samplingRate
-                  numChannels:audioManager.numOutputChannels];
+    self.fileReader = [[AudioFileReader alloc]
+                       initWithAudioFileURL:inputFileURL 
+                       samplingRate:self.audioManager.samplingRate
+                       numChannels:self.audioManager.numOutputChannels];
 
-    fileReader.currentTime = 5;    
-    [fileReader play];
+    self.fileReader.currentTime = 5;
+    [self.fileReader play];
     
     
     __block int counter = 0;
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+    
+    __weak AppDelegate * wself = self;
+    
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
      {
-         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
          counter++;
          if (counter % 80 == 0)
-             NSLog(@"Time: %f", fileReader.currentTime);
+             NSLog(@"Time: %f", wself.fileReader.currentTime);
          
      }];
     

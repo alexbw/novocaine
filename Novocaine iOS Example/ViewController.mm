@@ -46,8 +46,8 @@
 {
     [super viewWillAppear:animated];
 
-    ringBuffer = new RingBuffer(32768, 2); 
-    audioManager = [Novocaine audioManager];
+    self.ringBuffer = new RingBuffer(32768, 2);
+    self.audioManager = [Novocaine audioManager];
 
     
     // Basic playthru example
@@ -169,18 +169,20 @@
     // ========================================    
     NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
 
-    fileReader = [[AudioFileReader alloc] 
-                  initWithAudioFileURL:inputFileURL 
-                  samplingRate:audioManager.samplingRate
-                  numChannels:audioManager.numOutputChannels];
+        self.fileReader = [[AudioFileReader alloc]
+                           initWithAudioFileURL:inputFileURL 
+                           samplingRate:self.audioManager.samplingRate
+                           numChannels:self.audioManager.numOutputChannels];
     
-    [fileReader play];
-    fileReader.currentTime = 30.0;
+    [self.fileReader play];
+    self.fileReader.currentTime = 30.0;
     
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+    
+    __weak ViewController * wself = self;
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
      {
-         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-         NSLog(@"Time: %f", fileReader.currentTime);
+         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+         NSLog(@"Time: %f", wself.fileReader.currentTime);
      }];
 
     

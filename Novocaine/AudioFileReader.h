@@ -27,27 +27,15 @@
 
 
 @interface AudioFileReader : NSObject
-{
-    float currentTime;
-    float duration;
-    float samplingRate;
-    float latency;
-    UInt32 numChannels;
-    NSURL *audioFileURL;
-    
-    InputBlock readerBlock;
-    
-    BOOL playing;
-}
 
-@property (getter=getCurrentTime, setter=setCurrentTime:) float currentTime;
-@property (readonly, getter=getDuration) float duration;
-@property float samplingRate;
-@property UInt32 numChannels;
-@property float latency;
+@property (nonatomic, assign, getter=getCurrentTime, setter=setCurrentTime:) float currentTime;
+@property (nonatomic, assign, readonly, getter=getDuration) float duration;
+@property (nonatomic, assign) float samplingRate;
+@property (nonatomic, assign) UInt32 numChannels;
+@property (nonatomic, assign) float latency;
 @property (nonatomic, copy) NSURL *audioFileURL;
 @property (nonatomic, copy) InputBlock readerBlock;
-@property BOOL playing;
+@property (nonatomic, assign) BOOL playing;
 
 
 - (id)initWithAudioFileURL:(NSURL *)urlToAudioFile samplingRate:(float)thisSamplingRate numChannels:(UInt32)thisNumChannels;

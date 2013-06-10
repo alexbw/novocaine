@@ -32,16 +32,15 @@
     RingBuffer *ringBuffer;
 }
 
-@property AudioStreamBasicDescription outputFormat;
-@property ExtAudioFileRef inputFile;
-@property UInt32 outputBufferSize;
-@property float *outputBuffer;
-@property float *holdingBuffer;
-@property UInt32 numSamplesReadPerPacket;
-@property UInt32 desiredPrebufferedSamples;
-@property SInt64 currentFileTime;
-@property dispatch_source_t callbackTimer;
-
+@property (nonatomic, assign) AudioStreamBasicDescription outputFormat;
+@property (nonatomic, assign) ExtAudioFileRef inputFile;
+@property (nonatomic, assign) UInt32 outputBufferSize;
+@property (nonatomic, assign) float *outputBuffer;
+@property (nonatomic, assign) float *holdingBuffer;
+@property (nonatomic, assign) UInt32 numSamplesReadPerPacket;
+@property (nonatomic, assign) UInt32 desiredPrebufferedSamples;
+@property (nonatomic, assign) SInt64 currentFileTime;
+@property (nonatomic, assign) dispatch_source_t callbackTimer;
 
 - (void)bufferNewAudio;
 
@@ -51,23 +50,6 @@
 
 @implementation AudioFileReader
 
-@synthesize outputFormat = _outputFormat;
-@synthesize inputFile = _inputFile;
-@synthesize outputBuffer = _outputBuffer;
-@synthesize holdingBuffer = _holdingBuffer;
-@synthesize outputBufferSize = _outputBufferSize;
-@synthesize numSamplesReadPerPacket = _numSamplesReadPerPacket;
-@synthesize desiredPrebufferedSamples = _desiredPrebufferedSamples;
-@synthesize currentFileTime = _currentFileTime;
-@synthesize callbackTimer = _callbackTimer;
-@synthesize currentTime = _currentTime;
-@synthesize duration = _duration;
-@synthesize samplingRate = _samplingRate;
-@synthesize latency = _latency;
-@synthesize numChannels = _numChannels;
-@synthesize audioFileURL = _audioFileURL;
-@synthesize readerBlock = _readerBlock;
-@synthesize playing = _playing;
 
 - (void)dealloc
 {
@@ -85,7 +67,6 @@
     
     delete ringBuffer;
     
-    [super dealloc];
 }
 
 
@@ -101,7 +82,7 @@
         
         // Open a reference to the audio file
         self.audioFileURL = urlToAudioFile;
-        CFURLRef audioFileRef = (CFURLRef)self.audioFileURL;
+        CFURLRef audioFileRef = (__bridge CFURLRef)self.audioFileURL;
         CheckError(ExtAudioFileOpenURL(audioFileRef, &_inputFile), "Opening file URL (ExtAudioFileOpenURL)");
 
         

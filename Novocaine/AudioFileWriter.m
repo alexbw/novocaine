@@ -29,39 +29,21 @@
 
 @interface AudioFileWriter()
 
-@property AudioStreamBasicDescription outputFormat;
-@property ExtAudioFileRef outputFile;
-@property UInt32 outputBufferSize;
-@property float *outputBuffer;
-@property float *holdingBuffer;
-@property SInt64 currentFileTime;
-@property dispatch_source_t callbackTimer;
-@property (readwrite) float currentTime;
+@property (nonatomic, assign) AudioStreamBasicDescription outputFormat;
+@property (nonatomic, assign) ExtAudioFileRef outputFile;
+@property (nonatomic, assign) UInt32 outputBufferSize;
+@property (nonatomic, assign) float *outputBuffer;
+@property (nonatomic, assign) float *holdingBuffer;
+@property (nonatomic, assign) SInt64 currentFileTime;
+@property (nonatomic, assign) dispatch_source_t callbackTimer;
+@property (nonatomic, assign, readwrite) float currentTime;
 
 @end
-
 
 
 @implementation AudioFileWriter
 
 static pthread_mutex_t outputAudioFileLock;
-
-@synthesize outputFormat = _outputFormat;
-@synthesize outputFile = _outputFile;
-@synthesize outputBuffer = _outputBuffer;
-@synthesize holdingBuffer = _holdingBuffer;
-@synthesize outputBufferSize = _outputBufferSize;
-@synthesize currentFileTime = _currentFileTime;
-@synthesize callbackTimer = _callbackTimer;
-
-@synthesize currentTime = _currentTime;
-@synthesize duration = _duration;
-@synthesize samplingRate = _samplingRate;
-@synthesize latency = _latency;
-@synthesize numChannels = _numChannels;
-@synthesize audioFileURL = _audioFileURL;
-@synthesize writerBlock = _writerBlock;
-@synthesize recording = _recording;
 
 - (void)dealloc
 {
@@ -70,7 +52,6 @@ static pthread_mutex_t outputAudioFileLock;
     free(self.outputBuffer);
     free(self.holdingBuffer);
     
-    [super dealloc];
 }
 
 - (id)initWithAudioFileURL:(NSURL *)urlToAudioFile samplingRate:(float)thisSamplingRate numChannels:(UInt32)thisNumChannels
@@ -85,7 +66,7 @@ static pthread_mutex_t outputAudioFileLock;
         
         // Open a reference to the audio file
         self.audioFileURL = urlToAudioFile;
-        CFURLRef audioFileRef = (CFURLRef)self.audioFileURL;
+        CFURLRef audioFileRef = (__bridge CFURLRef)self.audioFileURL;
         
         AudioStreamBasicDescription outputFileDesc = {44100.0, kAudioFormatMPEG4AAC, 0, 0, 1024, 0, thisNumChannels, 0, 0};
         

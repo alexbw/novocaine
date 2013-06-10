@@ -30,27 +30,15 @@
 
 
 @interface AudioFileWriter : NSObject
-{
-    float currentTime;
-    float duration;
-    float samplingRate;
-    float latency;
-    UInt32 numChannels;
-    NSURL *audioFileURL;
-    
-    OutputBlock writerBlock;
-    
-    BOOL recording;
-}
 
-@property (getter=getDuration, readonly) float currentTime;
-@property (getter=getDuration) float duration;
-@property float samplingRate;
-@property UInt32 numChannels;
-@property float latency;
+@property (nonatomic, assign, getter=getDuration, readonly) float currentTime;
+@property (nonatomic, assign, getter=getDuration) float duration;
+@property (nonatomic, assign) float samplingRate;
+@property (nonatomic, assign) UInt32 numChannels;
+@property (nonatomic, assign) float latency;
 @property (nonatomic, copy) NSURL *audioFileURL;
 @property (nonatomic, copy) InputBlock writerBlock;
-@property BOOL recording;
+@property (nonatomic, assign) BOOL recording;
 
 
 - (id)initWithAudioFileURL:(NSURL *)urlToAudioFile samplingRate:(float)thisSamplingRate numChannels:(UInt32)thisNumChannels;
