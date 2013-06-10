@@ -127,6 +127,11 @@ static Novocaine *audioManager = nil;
 	return nil;
 }
 
+- (void)dealloc
+{
+    // TODO: Clean up allocated memory from calloc, malloc, new
+}
+
 
 #pragma mark - Audio Methods
 
@@ -532,33 +537,57 @@ static Novocaine *audioManager = nil;
 #if defined (USING_OSX)
 - (void)enumerateAudioDevices
 {
-    UInt32 propSize;
+    AudioObjectPropertyAddress propertyAddress;
+    propertyAddress.mSelector = kAudioHardwarePropertyDefaultInputDevice;
+    propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+    propertyAddress.mElement = kAudioObjectPropertyElementMaster;
     
-	UInt32 propsize = sizeof(AudioDeviceID);
-	CheckError(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultInputDevice, &propsize, &_defaultInputDeviceID), "Could not get the default device");
+    UInt32 propSize = sizeof(AudioDeviceID);
+    CheckError(AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &propSize, &_defaultInputDeviceID), "Could not get the default device");
     
-    AudioHardwareGetPropertyInfo( kAudioHardwarePropertyDevices, &propSize, NULL );
+    propertyAddress.mSelector = kAudioHardwarePropertyDevices;
+    propertyAddress.mScope = kAudioObjectPropertyScopeGlobal;
+    propertyAddress.mElement = kAudioObjectPropertyElementMaster;
+    
+    AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &propSize);
     uint32_t deviceCount = ( propSize / sizeof(AudioDeviceID) );
     
     // Allocate the device IDs
-    self.deviceIDs = (AudioDeviceID *)calloc(deviceCount, sizeof(AudioDeviceID));
+    _deviceIDs = (AudioDeviceID *)calloc(deviceCount, sizeof(AudioDeviceID));
     [_deviceNames removeAllObjects];
     
     // Get all the device IDs
-    CheckError( AudioHardwareGetProperty( kAudioHardwarePropertyDevices, &propSize, self.deviceIDs ), "Could not get device IDs");
+    CheckError( AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &propSize, _deviceIDs ), "Could not get device IDs");
+    
     
     // Get the names of all the device IDs
-    for( int i = 0; i < deviceCount; i++ ) 
+    // 256 chars should be big enough for pretty much any name
+    char deviceNameBuffer[256];
+    char mfrNameBuffer[256];
+    UInt32 nameBufSize;
+    AudioObjectPropertyAddress deviceAddress;
+    
+    for( int i = 0; i < deviceCount; i++ )
     {
-        UInt32 size = sizeof(AudioDeviceID);
-        CheckError( AudioDeviceGetPropertyInfo( self.deviceIDs[i], 0, true, kAudioDevicePropertyDeviceName, &size, NULL ), "Could not get device name length");
+        deviceAddress.mSelector = kAudioDevicePropertyDeviceName;
+        deviceAddress.mScope = kAudioObjectPropertyScopeGlobal;
+        deviceAddress.mElement = kAudioObjectPropertyElementMaster;
         
-        char cStringOfDeviceName[size];
-        CheckError( AudioDeviceGetProperty( self.deviceIDs[i], 0, true, kAudioDevicePropertyDeviceName, &size, cStringOfDeviceName ), "Could not get device name");
-        NSString *thisDeviceName = [NSString stringWithCString:cStringOfDeviceName encoding:NSUTF8StringEncoding];
+        nameBufSize = sizeof(deviceNameBuffer);
         
+        CheckError( AudioObjectGetPropertyData(self.deviceIDs[i], &deviceAddress, 0, NULL, &nameBufSize, deviceNameBuffer), "Could not get device name");
+
+        deviceAddress.mSelector = kAudioDevicePropertyDeviceManufacturer;
+        deviceAddress.mScope = kAudioObjectPropertyScopeGlobal;
+        deviceAddress.mElement = kAudioObjectPropertyElementMaster;
+        
+        nameBufSize = sizeof(mfrNameBuffer);
+        
+        CheckError( AudioObjectGetPropertyData(self.deviceIDs[i], &deviceAddress, 0, NULL, &nameBufSize, mfrNameBuffer), "Could not get device manufacturer");
+        
+        NSString *thisDeviceName = [NSString stringWithFormat:@"%@: %@", [NSString stringWithUTF8String:mfrNameBuffer], [NSString stringWithUTF8String:deviceNameBuffer]];
         NSLog(@"Device: %@, ID: %d", thisDeviceName, self.deviceIDs[i]);
-        [_deviceNames addObject:thisDeviceName];
+        [self.deviceNames addObject:thisDeviceName];
     }
     
 }
