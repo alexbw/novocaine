@@ -37,7 +37,6 @@
 @property (nonatomic, assign, readwrite, getter=getDuration) float duration;
 @property (nonatomic, assign, readwrite) float samplingRate;
 @property (nonatomic, assign, readwrite) UInt32 numChannels;
-@property (nonatomic, assign, readwrite) float latency;
 @property (nonatomic, assign, readwrite) BOOL playing;
 
 @property (nonatomic, assign) AudioStreamBasicDescription outputFormat;
@@ -215,7 +214,6 @@
 
 - (void)configureReaderCallback
 {
-    
     if (!self.callbackTimer)
     {
         self.callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());

@@ -30,6 +30,7 @@
     #include <CoreAudio/CoreAudio.h>
 #else
     #define USING_IOS
+    #include <AVFoundation/AVFoundation.h>
 #endif
 
 #include <Block.h>
@@ -101,6 +102,7 @@ typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numCha
 // ------ These properties/methods are used for configuration -------
 
 @property (nonatomic, copy) NSString *inputRoute;
+@property (nonatomic, assign) BOOL inputEnabled;
 
 // ND: Exposing the block setters this way will create the correct block signature for auto-complete.
 // These will map to "copy" property setters in class continuation in source file

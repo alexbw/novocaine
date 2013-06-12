@@ -32,6 +32,7 @@
 
 @property (nonatomic, assign, getter=getCurrentTime, setter=setCurrentTime:) float currentTime;
 @property (nonatomic, copy) NovocaineInputBlock readerBlock;
+@property (nonatomic, assign) float latency;
 
 // ----- Read-only ------
 
@@ -39,7 +40,6 @@
 @property (nonatomic, assign, readonly, getter=getDuration) float duration;
 @property (nonatomic, assign, readonly) float samplingRate;
 @property (nonatomic, assign, readonly) UInt32 numChannels;
-@property (nonatomic, assign, readonly) float latency;
 @property (nonatomic, assign, readonly) BOOL playing;
 
 
@@ -47,8 +47,9 @@
 
 // You use this method to grab audio if you have your own callback.
 // The buffer'll fill at the speed the audio is normally being played.
+
 - (void)retrieveFreshAudio:(float *)buffer numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels;
-//- (float)getCurrentTime;
+
 - (void)play;
 - (void)pause;
 - (void)stop;

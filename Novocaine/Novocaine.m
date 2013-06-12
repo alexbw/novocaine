@@ -74,8 +74,9 @@ static Novocaine *audioManager = nil;
 - (void)enumerateAudioDevices;
 #endif
 
-- (void)setupAudio;
-- (void)ifAudioInputIsAvailableThenSetupAudioSession;
+// must be called prior to playing audio
+- (void)setupAudioSession;
+- (void)setupAudioUnits;
 
 - (NSString *)applicationDocumentsDirectory;
 
@@ -135,7 +136,7 @@ static Novocaine *audioManager = nil;
         // self.playThroughEnabled = NO;
 		
 		// Fire up the audio session ( with steady error checking ... )
-        [self ifAudioInputIsAvailableThenSetupAudioSession];
+        [self setupAudioSession];
 		
 		return self;
 		
@@ -174,12 +175,81 @@ static Novocaine *audioManager = nil;
     }
 }
 
+#pragma mark - Properties
+
+- (void)setInputEnabled:(BOOL)inputEnabled
+{
+    if (inputEnabled != _inputEnabled){
+        
+        if (inputEnabled){
+            
+            if (self.inputAvailable) {
+                
+                // Enable input
+                UInt32 one = 1;
+                OSStatus err = AudioUnitSetProperty(_inputUnit,
+                                                    kAudioOutputUnitProperty_EnableIO,
+                                                    kAudioUnitScope_Input,
+                                                    kInputBus,
+                                                    &one,
+                                                    sizeof(one));
+                
+                if (err){
+                    
+                }
+                else{
+                    _inputEnabled = YES;
+                }
+            }
+            
+            // If we don't have input, then ask the user to provide some
+            else
+            {
+                
+                // TODO: Not sure a
+#if defined ( USING_IOS )
+                UIAlertView *noInputAlert =
+                [[UIAlertView alloc] initWithTitle:@"No Audio Input"
+                                           message:@"Couldn't find any audio input. Plug in your Apple headphones or another microphone."
+                                          delegate:self
+                                 cancelButtonTitle:@"OK"
+                                 otherButtonTitles:nil];
+                
+                [noInputAlert show];
+#endif
+                
+            }
+        }
+        else
+        {
+            // Disable input
+            UInt32 zero = 0;
+            OSStatus err = AudioUnitSetProperty(_inputUnit,
+                                                kAudioOutputUnitProperty_EnableIO,
+                                                kAudioUnitScope_Input,
+                                                kInputBus,
+                                                &zero,
+                                                sizeof(zero));
+            
+            if (err){
+                
+            }
+            else{
+                _inputEnabled = NO;
+            }
+        }
+
+    }
+}
+
 
 #pragma mark - Audio Methods
 
 
-- (void)ifAudioInputIsAvailableThenSetupAudioSession {
-	// Initialize and configure the audio session, and add an interuption listener
+- (void)setupAudioSession
+{
+	
+    // Initialize and configure the audio session, and add an interuption listener
     
 #if defined ( USING_IOS )
     CheckError( AudioSessionInitialize(NULL, NULL, sessionInterruptionListener, (__bridge void *)(self)), "Couldn't initialize audio session");
@@ -189,38 +259,36 @@ static Novocaine *audioManager = nil;
     [self enumerateAudioDevices];
     self.inputAvailable = YES;
 #endif
+    
 	
     // Check the session properties (available input routes, number of channels, etc)
     
-    
-    
     // If we do have input, then let's rock 'n roll.
-	if (self.inputAvailable) {
-		[self setupAudio];
-		[self play];
-	}
-    
-    // If we don't have input, then ask the user to provide some
-	else
-    {
-#if defined ( USING_IOS )
-		UIAlertView *noInputAlert =
-		[[UIAlertView alloc] initWithTitle:@"No Audio Input"
-								   message:@"Couldn't find any audio input. Plug in your Apple headphones or another microphone."
-								  delegate:self
-						 cancelButtonTitle:@"OK"
-						 otherButtonTitles:nil];
-		
-		[noInputAlert show];
-#endif
-        
-	}
+//	if (self.inputAvailable) {
+//		[self setupAudio];
+//		[self play];
+//	}
+//    
+//    // If we don't have input, then ask the user to provide some
+//	else
+//    {
+//#if defined ( USING_IOS )
+//		UIAlertView *noInputAlert =
+//		[[UIAlertView alloc] initWithTitle:@"No Audio Input"
+//								   message:@"Couldn't find any audio input. Plug in your Apple headphones or another microphone."
+//								  delegate:self
+//						 cancelButtonTitle:@"OK"
+//						 otherButtonTitles:nil];
+//		
+//		[noInputAlert show];
+//#endif
+//        
+//	}
 }
 
 
-- (void)setupAudio
+- (void)setupAudioUnits
 {
-    
     
     // --- Audio Session Setup ---
     // ---------------------------
@@ -245,7 +313,11 @@ static Novocaine *audioManager = nil;
     
     
     // Set the audio session active
-    CheckError( AudioSessionSetActive(YES), "Couldn't activate the audio session");
+    NSError *err = nil;
+    if (![[AVAudioSession sharedInstance] setActive:YES error:&err]){
+        NSLog(@"Couldn't activate audio session: %@", err);
+    }
+    
     
     [self checkSessionProperties];
     
@@ -293,15 +365,6 @@ static Novocaine *audioManager = nil;
     CheckError( AudioComponentInstanceNew(outputComponent, &_outputUnit), "Couldn't create the output audio unit");
 #endif
     
-    
-    // Enable input
-    UInt32 one = 1;
-    CheckError( AudioUnitSetProperty(_inputUnit,
-                                     kAudioOutputUnitProperty_EnableIO, 
-                                     kAudioUnitScope_Input, 
-                                     kInputBus, 
-                                     &one, 
-                                     sizeof(one)), "Couldn't enable IO on the input scope of output unit");
     
 #if defined ( USING_OSX )    
     // Disable output on the input unit
@@ -663,7 +726,6 @@ static Novocaine *audioManager = nil;
     
 #endif
     
-    
     self.inputAvailable = isInputAvailable;
     
 	if ( self.inputAvailable ) {
@@ -762,6 +824,7 @@ OSStatus renderCallback (void						*inRefCon,
                          UInt32						inNumberFrames,
                          AudioBufferList				* ioData)
 {
+    // autorelease pool for much faster ARC performance on repeated calls from separate thread
     @autoreleasepool {
         
         Novocaine *sm = (__bridge Novocaine *)inRefCon;
