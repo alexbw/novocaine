@@ -795,7 +795,7 @@ OSStatus renderCallback (void						*inRefCon,
                 int thisNumChannels = ioData->mBuffers[iBuffer].mNumberChannels;
                 
                 for (int iChannel = 0; iChannel < thisNumChannels; ++iChannel) {
-                    vDSP_vsadd(sm.outData+iChannel, sm.numOutputChannels, &zero, (float *)ioData->mBuffers[iBuffer].mData, thisNumChannels, inNumberFrames);
+                    vDSP_vsadd(sm.outData+iChannel+iBuffer, sm.numOutputChannels, &zero, (float *)ioData->mBuffers[iBuffer].mData, thisNumChannels, inNumberFrames);
                 }
             }
         }
