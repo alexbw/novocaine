@@ -180,11 +180,11 @@ static Novocaine *audioManager = nil;
 
 #pragma mark - Properties
 
-- (void)setInputEnabled:(BOOL)inputEnabled
-{
-    
-    _inputEnabled = inputEnabled;
-}
+// TODO: Implement this.
+//- (void)setInputEnabled:(BOOL)inputEnabled
+//{
+//    _inputEnabled = inputEnabled;
+//}
 
 #ifdef USING_IOS
 - (void)setForceOutputToSpeaker:(BOOL)forceOutputToSpeaker

@@ -102,7 +102,9 @@ typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numCha
 // ------ These properties/methods are used for configuration -------
 
 @property (nonatomic, copy)     NSString *inputRoute;
-@property (nonatomic, assign)   BOOL inputEnabled;
+
+// TODO: Not yet implemented. No effect right now.
+//@property (nonatomic, assign)   BOOL inputEnabled;
 
 #ifdef USING_IOS
 @property (nonatomic, assign)   BOOL forceOutputToSpeaker;
