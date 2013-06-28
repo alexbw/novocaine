@@ -110,15 +110,13 @@ typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numCha
 @property (nonatomic, assign)   BOOL forceOutputToSpeaker;
 #endif
 
-// ND: Exposing the block setters this way will create the correct block signature for auto-complete.
-// These will map to "copy" property setters in class continuation in source file
+// Explicitly declaring the block setters will create the correct block signature for auto-complete.
+// These will map to the setters for the block properties below.
 - (void)setInputBlock:(NovocaineInputBlock)block;
 - (void)setOutputBlock:(NovocaineOutputBlock)block;
 
-// ND: Not sure if there is a need to reference these elsewhere, but here are the getters just in case
-// These will also map to the property getters in the class continuation.
-- (NovocaineInputBlock)inputBlock;
-- (NovocaineOutputBlock)outputBlock;
+@property (nonatomic, copy) NovocaineOutputBlock outputBlock;
+@property (nonatomic, copy) NovocaineInputBlock inputBlock;
 
 // ------------------------------------------------------------------
 

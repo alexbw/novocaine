@@ -61,9 +61,6 @@ static Novocaine *audioManager = nil;
 @property (nonatomic, assign, readwrite) float *inData;
 @property (nonatomic, assign, readwrite) float *outData;
 
-@property (nonatomic, copy) NovocaineOutputBlock outputBlock;
-@property (nonatomic, copy) NovocaineInputBlock inputBlock;
-
 #if defined (USING_OSX)
 @property (nonatomic, assign) AudioDeviceID *deviceIDs;
 @property (nonatomic, strong) NSMutableArray *deviceNames;
