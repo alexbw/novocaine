@@ -218,7 +218,9 @@
 //        }
 //    };
 
-    
+    // START IT UP YO
+    [self.audioManager play];
+
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

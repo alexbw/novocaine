@@ -189,9 +189,9 @@ static Novocaine *audioManager = nil;
 #ifdef USING_IOS
 - (void)setForceOutputToSpeaker:(BOOL)forceOutputToSpeaker
 {
-    UInt32 value = forceOutputToSpeaker ? 1 : 0;
     
 #if !TARGET_IPHONE_SIMULATOR
+    UInt32 value = forceOutputToSpeaker ? 1 : 0;
     // should not be fatal error
     OSStatus err = AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryDefaultToSpeaker, sizeof(UInt32), &value);
     if (err != noErr){
@@ -318,6 +318,7 @@ static Novocaine *audioManager = nil;
                                      sizeof(UInt32)), "Couldn't disable output on the audio unit");
     
     // Enable output
+    UInt32 one = 1;
     CheckError( AudioUnitSetProperty(_outputUnit,
                                      kAudioOutputUnitProperty_EnableIO, 
                                      kAudioUnitScope_Output, 

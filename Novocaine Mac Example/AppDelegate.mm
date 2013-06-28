@@ -119,7 +119,8 @@
 //        }
 //    };
 
-    
+    // START IT UP YO
+    [self.audioManager play];
 }
 
 @end
