@@ -5,6 +5,7 @@ Really fast audio in iOS and Mac OS X using Audio Units is hard, and will leave 
 ### Getting Audio
 ``` objective-c
 Novocaine *audioManager = [Novocaine audioManager];
+[audioManager play];
 [audioManager setInputBlock:^(float *newAudio, UInt32 numSamples, UInt32 numChannels) {
 	// Now you're getting audio from the microphone every 20 milliseconds or so. How's that for easy?
 	// Audio comes in interleaved, so,
