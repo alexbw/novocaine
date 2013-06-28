@@ -29,10 +29,9 @@
 #import "AudioFileWriter.h"
 
 @interface ViewController : UIViewController
-{
-    RingBuffer *ringBuffer;
-    Novocaine *audioManager;
-    AudioFileReader *fileReader;
-    AudioFileWriter *fileWriter;
-}
+
+@property (nonatomic, strong) Novocaine *audioManager;
+@property (nonatomic, strong) AudioFileReader *fileReader;
+@property (nonatomic, strong) AudioFileWriter *fileWriter;
+
 @end

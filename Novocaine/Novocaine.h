@@ -30,6 +30,7 @@
     #include <CoreAudio/CoreAudio.h>
 #else
     #define USING_IOS
+    #include <AVFoundation/AVFoundation.h>
 #endif
 
 #include <Block.h>
@@ -89,91 +90,61 @@ void sessionInterruptionListener(void *inClientData, UInt32 inInterruption);
 }
 #endif
 
-typedef void (^OutputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
-typedef void (^InputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
+typedef void (^NovocaineOutputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
+typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 
 #if defined (USING_IOS)
 @interface Novocaine : NSObject <UIAlertViewDelegate>
 #elif defined (USING_OSX)
 @interface Novocaine : NSObject
 #endif
-{    
-	// Audio Handling
-	AudioUnit inputUnit;
-    AudioUnit outputUnit;
-    AudioBufferList *inputBuffer;
-    
-	// Session Properties
-	BOOL inputAvailable;
-	NSString *inputRoute;
-	UInt32 numInputChannels;
-	UInt32 numOutputChannels;
-    Float64 samplingRate;
-    BOOL isInterleaved;
-    UInt32 numBytesPerSample;
-    AudioStreamBasicDescription inputFormat;
-    AudioStreamBasicDescription outputFormat;
-	
-	// Audio Processing
-    OutputBlock outputBlock;
-    InputBlock inputBlock;
-    
-	float *inData;
-    float *outData;
-	
-	BOOL playing;
-    // BOOL playThroughEnabled;
-	
-    
-#if defined (USING_OSX)
-    AudioDeviceID *deviceIDs;
-    NSMutableArray *deviceNames;
-    AudioDeviceID defaultInputDeviceID;
-    NSString *defaultDeviceName;
-#endif
-    
-}
 
-@property AudioUnit inputUnit;
-@property AudioUnit outputUnit;
-@property AudioBufferList *inputBuffer;
-@property (nonatomic, copy) OutputBlock outputBlock;
-@property (nonatomic, copy) InputBlock inputBlock;
-@property BOOL inputAvailable;
-@property (nonatomic, retain) NSString *inputRoute;
-@property UInt32 numInputChannels;
-@property UInt32 numOutputChannels;
-@property Float64 samplingRate;
-@property BOOL isInterleaved;
-@property UInt32 numBytesPerSample;
-@property AudioStreamBasicDescription inputFormat;
-@property AudioStreamBasicDescription outputFormat;
+// ------ These properties/methods are used for configuration -------
+
+@property (nonatomic, copy)     NSString *inputRoute;
+
+// TODO: Not yet implemented. No effect right now.
+//@property (nonatomic, assign)   BOOL inputEnabled;
+
+#ifdef USING_IOS
+@property (nonatomic, assign)   BOOL forceOutputToSpeaker;
+#endif
+
+// ND: Exposing the block setters this way will create the correct block signature for auto-complete.
+// These will map to "copy" property setters in class continuation in source file
+- (void)setInputBlock:(NovocaineInputBlock)block;
+- (void)setOutputBlock:(NovocaineOutputBlock)block;
+
+// ND: Not sure if there is a need to reference these elsewhere, but here are the getters just in case
+// These will also map to the property getters in the class continuation.
+- (NovocaineInputBlock)inputBlock;
+- (NovocaineOutputBlock)outputBlock;
+
+// ------------------------------------------------------------------
+
+// these should be readonly in public interface - no need for public write access
+@property (nonatomic, assign, readonly) AudioUnit inputUnit;
+@property (nonatomic, assign, readonly) AudioUnit outputUnit;
+@property (nonatomic, assign, readonly) AudioBufferList *inputBuffer;
+@property (nonatomic, assign, readonly) BOOL inputAvailable;
+@property (nonatomic, assign, readonly) UInt32 numInputChannels;
+@property (nonatomic, assign, readonly) UInt32 numOutputChannels;
+@property (nonatomic, assign, readonly) Float64 samplingRate;
+@property (nonatomic, assign, readonly) BOOL isInterleaved;
+@property (nonatomic, assign, readonly) UInt32 numBytesPerSample;
+@property (nonatomic, assign, readonly) AudioStreamBasicDescription inputFormat;
+@property (nonatomic, assign, readonly) AudioStreamBasicDescription outputFormat;
+@property (nonatomic, assign, readonly) BOOL playing;
 
 // @property BOOL playThroughEnabled;
-@property BOOL playing;
-@property float *inData;
-@property float *outData;
-
-#if defined (USING_OSX)
-@property AudioDeviceID *deviceIDs;
-@property (nonatomic, retain) NSMutableArray *deviceNames;
-@property  AudioDeviceID defaultInputDeviceID;
-@property (nonatomic, retain) NSString *defaultInputDeviceName;
-@property  AudioDeviceID defaultOutputDeviceID;
-@property (nonatomic, retain) NSString *defaultOutputDeviceName;
-- (void)enumerateAudioDevices;
-#endif
 
 
 // Singleton methods
 + (Novocaine *) audioManager;
 
-
 // Audio Unit methods
 - (void)play;
 - (void)pause;
-- (void)setupAudio;
-- (void)ifAudioInputIsAvailableThenSetupAudioSession;
 
 #if defined ( USING_IOS )
 - (void)checkSessionProperties;

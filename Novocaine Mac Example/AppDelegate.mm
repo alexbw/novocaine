@@ -26,42 +26,43 @@
 
 @implementation AppDelegate
 
-@synthesize window = _window;
-
 - (void)dealloc
 {
-    [super dealloc];
+    if (_ringBuffer){
+        delete _ringBuffer;
+    }
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     
-
-    audioManager = [Novocaine audioManager];
-//    ringBuffer = new RingBuffer(32768, 2); 
+    self.audioManager = [Novocaine audioManager];
     
+    self.ringBuffer = new RingBuffer(32768, 2);
+    
+    __weak AppDelegate * wself = self;
 
 // A simple delay that's hard to express without ring buffers
 // ========================================
-//
-//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-//        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+
+//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//        wself.ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
 //    }];
 //    
 //    int echoDelay = 11025;
 //    float *holdingBuffer = (float *)calloc(16384, sizeof(float));
-//    [audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
+//    [self.audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
 //        
 //        // Grab the play-through audio
-//        ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
+//        wself.ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
 //        float volume = 0.8;
 //        vDSP_vsmul(outData, 1, &volume, outData, 1, numFrames*numChannels);
 //        
 //        
 //        // Seek back, and grab some delayed audio
-//        ringBuffer->SeekReadHeadPosition(-echoDelay-numFrames);
-//        ringBuffer->FetchInterleavedData(holdingBuffer, numFrames, numChannels);
-//        ringBuffer->SeekReadHeadPosition(echoDelay);
+//        wself.ringBuffer->SeekReadHeadPosition(-echoDelay-numFrames);
+//        wself.ringBuffer->FetchInterleavedData(holdingBuffer, numFrames, numChannels);
+//        wself.ringBuffer->SeekReadHeadPosition(echoDelay);
 //        
 //        volume = 0.5;
 //        vDSP_vsmul(holdingBuffer, 1, &volume, holdingBuffer, 1, numFrames*numChannels);
@@ -73,27 +74,27 @@
     // ========================================    
     NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
     
-    fileReader = [[AudioFileReader alloc] 
-                  initWithAudioFileURL:inputFileURL 
-                  samplingRate:audioManager.samplingRate
-                  numChannels:audioManager.numOutputChannels];
+    self.fileReader = [[AudioFileReader alloc]
+                       initWithAudioFileURL:inputFileURL 
+                       samplingRate:self.audioManager.samplingRate
+                       numChannels:self.audioManager.numOutputChannels];
 
-    fileReader.currentTime = 5;    
-    [fileReader play];
+    self.fileReader.currentTime = 5;
+    [self.fileReader play];
     
     
     __block int counter = 0;
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+    
+    
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
      {
-         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
          counter++;
          if (counter % 80 == 0)
-             NSLog(@"Time: %f", fileReader.currentTime);
+             NSLog(@"Time: %f", wself.fileReader.currentTime);
          
      }];
     
-
-
     
     // AUDIO FILE WRITING YEAH!
     // ========================================    
@@ -103,19 +104,18 @@
 //                               nil];
 //    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
 //
-//    fileWriter = [[AudioFileWriter alloc] 
-//                  initWithAudioFileURL:outputFileURL 
-//                  samplingRate:audioManager.samplingRate 
-//                  numChannels:audioManager.numInputChannels];
+//    self.fileWriter = [[AudioFileWriter alloc]
+//                       initWithAudioFileURL:outputFileURL 
+//                       samplingRate:self.audioManager.samplingRate
+//                       numChannels:self.audioManager.numInputChannels];
 //    
 //    
 //    __block int counter = 0;
-//    audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
-//        [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
+//    self.audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//        [wself.fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
 //        counter += 1;
-//        if (counter > 10 * audioManager.samplingRate / numChannels) { // 10 seconds of recording
-//            audioManager.inputBlock = nil;
-//            [fileWriter release];
+//        if (counter > 10 * wself.audioManager.samplingRate / numChannels) { // 10 seconds of recording
+//            wself.audioManager.inputBlock = nil;
 //        }
 //    };
 

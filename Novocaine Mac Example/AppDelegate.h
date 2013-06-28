@@ -28,13 +28,12 @@
 #import "AudioFileWriter.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-{
-    RingBuffer *ringBuffer;
-    Novocaine *audioManager;
-    AudioFileReader *fileReader;
-    AudioFileWriter *fileWriter;
-}
 
-@property (assign) IBOutlet NSWindow *window;
+@property (nonatomic, strong) Novocaine *audioManager;
+@property (nonatomic, strong) AudioFileReader *fileReader;
+@property (nonatomic, strong) AudioFileWriter *fileWriter;
+@property (nonatomic, assign) RingBuffer * ringBuffer;
+
+@property (nonatomic, weak) IBOutlet NSWindow *window;
 
 @end

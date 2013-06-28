@@ -26,9 +26,16 @@
 
 @interface ViewController ()
 
+@property (nonatomic, assign) RingBuffer *ringBuffer;
+
 @end
 
 @implementation ViewController
+
+- (void)dealloc
+{
+    delete self.ringBuffer;
+}
 
 - (void)viewDidLoad
 {
@@ -45,27 +52,29 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    __weak ViewController * wself = self;
 
-    ringBuffer = new RingBuffer(32768, 2); 
-    audioManager = [Novocaine audioManager];
+    self.ringBuffer = new RingBuffer(32768, 2);
+    self.audioManager = [Novocaine audioManager];
 
     
     // Basic playthru example
-//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
 //        float volume = 0.5;
 //        vDSP_vsmul(data, 1, &volume, data, 1, numFrames*numChannels);
-//        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+//        wself.ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
 //    }];
 //    
 //    
-//    [audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
-//        ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
+//    [self.audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
+//        wself.ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
 //    }];
     
     
      // MAKE SOME NOOOOO OIIIISSSEEE
     // ==================================================
-//     [audioManager setOutputBlock:^(float *newdata, UInt32 numFrames, UInt32 thisNumChannels)
+//     [self.audioManager setOutputBlock:^(float *newdata, UInt32 numFrames, UInt32 thisNumChannels)
 //         {
 //             for (int i = 0; i < numFrames * thisNumChannels; i++) {
 //                 newdata[i] = (rand() % 100) / 100.0f / 2;
@@ -76,7 +85,7 @@
     // MEASURE SOME DECIBELS!
     // ==================================================
 //    __block float dbVal = 0.0;
-//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
 //
 //        vDSP_vsq(data, 1, data, 1, numFrames*numChannels);
 //        float meanVal = 0.0;
@@ -92,10 +101,10 @@
     // SIGNAL GENERATOR!
 //    __block float frequency = 40.0;
 //    __block float phase = 0.0;
-//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
 //
-//         float samplingRate = audioManager.samplingRate;
+//         float samplingRate = wself.audioManager.samplingRate;
 //         for (int i=0; i < numFrames; ++i)
 //         {
 //             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
@@ -112,18 +121,18 @@
     // DALEK VOICE!
     // (aka Ring Modulator)
     
-//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
-//         ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+//         wself.ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
 //     }];
 //    
 //    __block float frequency = 100.0;
 //    __block float phase = 0.0;
-//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
-//         ringBuffer->FetchInterleavedData(data, numFrames, numChannels);
+//         wself.ringBuffer->FetchInterleavedData(data, numFrames, numChannels);
 //         
-//         float samplingRate = audioManager.samplingRate;
+//         float samplingRate = wself.audioManager.samplingRate;
 //         for (int i=0; i < numFrames; ++i)
 //         {
 //             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
@@ -135,23 +144,23 @@
 //             if (phase > 1.0) phase = -1;
 //         }
 //     }];
-    
+//    
     
     // VOICE-MODULATED OSCILLATOR
     
 //    __block float magnitude = 0.0;
-//    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
 //         vDSP_rmsqv(data, 1, &magnitude, numFrames*numChannels);
 //     }];
 //    
 //    __block float frequency = 100.0;
 //    __block float phase = 0.0;
-//    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
 //
 //         printf("Magnitude: %f\n", magnitude);
-//         float samplingRate = audioManager.samplingRate;
+//         float samplingRate = wself.audioManager.samplingRate;
 //         for (int i=0; i < numFrames; ++i)
 //         {
 //             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
@@ -169,18 +178,19 @@
     // ========================================    
     NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
 
-    fileReader = [[AudioFileReader alloc] 
-                  initWithAudioFileURL:inputFileURL 
-                  samplingRate:audioManager.samplingRate
-                  numChannels:audioManager.numOutputChannels];
+        self.fileReader = [[AudioFileReader alloc]
+                           initWithAudioFileURL:inputFileURL 
+                           samplingRate:self.audioManager.samplingRate
+                           numChannels:self.audioManager.numOutputChannels];
     
-    [fileReader play];
-    fileReader.currentTime = 30.0;
+    [self.fileReader play];
+    self.fileReader.currentTime = 30.0;
     
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+    
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
      {
-         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-         NSLog(@"Time: %f", fileReader.currentTime);
+         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+         NSLog(@"Time: %f", wself.fileReader.currentTime);
      }];
 
     
@@ -193,19 +203,18 @@
 //    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
 //    NSLog(@"URL: %@", outputFileURL);
 //    
-//    fileWriter = [[AudioFileWriter alloc] 
-//                  initWithAudioFileURL:outputFileURL 
-//                  samplingRate:audioManager.samplingRate 
-//                  numChannels:audioManager.numInputChannels];
+//    self.fileWriter = [[AudioFileWriter alloc]
+//                       initWithAudioFileURL:outputFileURL 
+//                       samplingRate:self.audioManager.samplingRate
+//                       numChannels:self.audioManager.numInputChannels];
 //    
 //    
 //    __block int counter = 0;
-//    audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
-//        [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
+//    self.audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
+//        [wself.fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
 //        counter += 1;
 //        if (counter > 400) { // roughly 5 seconds of audio
-//            audioManager.inputBlock = nil;
-//            [fileWriter release];
+//            wself.audioManager.inputBlock = nil;
 //        }
 //    };
 
