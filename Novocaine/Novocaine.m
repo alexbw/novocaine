@@ -217,8 +217,7 @@ static Novocaine *audioManager = nil;
     if (![[AVAudioSession sharedInstance] setActive:YES error:&err]){
         NSLog(@"Couldn't activate audio session: %@", err);
     }
-    [
-     self checkAudioSource];
+    [self checkAudioSource];
 #elif defined ( USING_OSX )
     // TODO: grab the audio device
     [self enumerateAudioDevices];
