@@ -211,11 +211,14 @@ static Novocaine *audioManager = nil;
     // Initialize and configure the audio session, and add an interuption listener
     
 #if defined ( USING_IOS )
+    
+    // Set the audio session active
     NSError *err = nil;
     if (![[AVAudioSession sharedInstance] setActive:YES error:&err]){
-        NSLog(@"Could not activate audio session: %@", err);
+        NSLog(@"Couldn't activate audio session: %@", err);
     }
-    [self checkAudioSource];    
+    [
+     self checkAudioSource];
 #elif defined ( USING_OSX )
     // TODO: grab the audio device
     [self enumerateAudioDevices];
@@ -232,6 +235,7 @@ static Novocaine *audioManager = nil;
     
 #if defined ( USING_IOS )
     
+    // TODO: Move this somewhere more dynamic - should update category as appropriate to current application behavior
     UInt32 sessionCategory = kAudioSessionCategory_PlayAndRecord;
     CheckError( AudioSessionSetProperty (kAudioSessionProperty_AudioCategory,
                                          sizeof (sessionCategory),
@@ -247,24 +251,11 @@ static Novocaine *audioManager = nil;
     Float32 preferredBufferSize = 0.0232;
     CheckError( AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize), "Couldn't set the preferred buffer duration");
 #endif
-    
-    
-    // Set the audio session active
-    NSError *err = nil;
-    if (![[AVAudioSession sharedInstance] setActive:YES error:&err]){
-        NSLog(@"Couldn't activate audio session: %@", err);
-    }
-    
+
     
     [self checkSessionProperties];
     
-#elif defined ( USING_OSX )
-    
-    
-    
 #endif
-    
-    
     
     // ----- Audio Unit Setup -----
     // ----------------------------
@@ -302,6 +293,16 @@ static Novocaine *audioManager = nil;
     CheckError( AudioComponentInstanceNew(outputComponent, &_outputUnit), "Couldn't create the output audio unit");
 #endif
     
+    // Enable input
+    // TODO: Conditionally disable input if option has not been specified
+    UInt32 one = 1;
+    CheckError( AudioUnitSetProperty(_inputUnit,
+                                     kAudioOutputUnitProperty_EnableIO,
+                                     kAudioUnitScope_Input,
+                                     kInputBus,
+                                     &one,
+                                     sizeof(one)), "Couldn't enable IO on the input scope of output unit");
+    
     
 #if defined ( USING_OSX )    
     // Disable output on the input unit
@@ -315,7 +316,6 @@ static Novocaine *audioManager = nil;
                                      sizeof(UInt32)), "Couldn't disable output on the audio unit");
     
     // Enable output
-    UInt32 one = 1;
     CheckError( AudioUnitSetProperty(_outputUnit,
                                      kAudioOutputUnitProperty_EnableIO, 
                                      kAudioUnitScope_Output, 
