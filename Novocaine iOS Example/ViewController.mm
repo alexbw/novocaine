@@ -99,7 +99,7 @@
 //    }];
     
     // SIGNAL GENERATOR!
-//    __block float frequency = 40.0;
+//    __block float frequency = 2000.0;
 //    __block float phase = 0.0;
 //    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
