@@ -792,7 +792,14 @@ OSStatus renderCallback (void						*inRefCon,
                 int thisNumChannels = ioData->mBuffers[iBuffer].mNumberChannels;
                 
                 for (int iChannel = 0; iChannel < thisNumChannels; ++iChannel) {
-                    vDSP_vsadd(sm.outData+iChannel+iBuffer, sm.numOutputChannels, &zero, (float *)ioData->mBuffers[iBuffer].mData, thisNumChannels, inNumberFrames);
+
+                    int interleaveOffset = iChannel;
+                    if (iBuffer < sm.numOutputChannels){
+                        interleaveOffset += iBuffer;
+                    }
+                    
+                    vDSP_vsadd(sm.outData+interleaveOffset, sm.numOutputChannels, &zero, (float *)ioData->mBuffers[iBuffer].mData, thisNumChannels, inNumberFrames);
+                    
                 }
             }
         }
