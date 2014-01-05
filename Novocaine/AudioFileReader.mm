@@ -187,13 +187,7 @@
 - (void)setCurrentTime:(float)thisCurrentTime
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self pause];
         ExtAudioFileSeek(self.inputFile, thisCurrentTime*self.samplingRate);
-        
-        [self clearBuffer];
-        [self bufferNewAudio];
-        
-        [self play];
     });
 }
 
@@ -274,6 +268,7 @@
     [self pause];
     if (self.callbackTimer) {
         dispatch_release(self.callbackTimer);
+        self.callbackTimer = nil;
     }
 }
 
