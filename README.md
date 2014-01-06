@@ -23,7 +23,7 @@ Novocaine *audioManager = [Novocaine audioManager];
 ```
 
 ### Does anybody actually use it?
-Yep. Novocaine is result of three years of work on the audio engine of Octave, Fourier and oScope, a powerful suite of audio analysis apps.
+Yep. Novocaine is result of three years of work on the audio engine of [Octave](https://itunes.apple.com/us/app/octave-an-rta-for-the-iphone/id386083594?mt=8), [Fourier](https://itunes.apple.com/us/app/fourier/id386084557?mt=8) and [oScope](https://itunes.apple.com/us/app/oscope/id344345859?mt=8), a powerful suite of audio analysis apps. Please do check them out!
 
 ### A thing to note: 
 The RingBuffer class is written in C++ to make things extra zippy, so the classes that use it will have to be Objective-C++. Change all the files that use RingBuffer from MyClass.m to MyClass.mm.
