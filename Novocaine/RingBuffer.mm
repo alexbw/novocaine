@@ -23,12 +23,16 @@
 
 
 #include "RingBuffer.h"
+#import <libkern/OSAtomic.h>
 
+static void atomic_set(int64_t *ptr, int64_t value)
+{
+    OSAtomicAdd64(value - *ptr, ptr);
+}
 
 RingBuffer::RingBuffer(SInt64 bufferLength, SInt64 numChannels) : 
 mSizeOfBuffer(bufferLength)
 {
-	
 	if (numChannels > kMaxNumChannels)
 		mNumChannels = kMaxNumChannels;
 	else if (numChannels <= 0)
@@ -53,6 +57,15 @@ RingBuffer::~RingBuffer()
     }
 }
 
+void RingBuffer::UpdateFrameCount(int numFrames, int channel)
+{
+    atomic_set(&mLastWrittenIndex[channel], (mLastWrittenIndex[channel] + numFrames) % (mSizeOfBuffer));
+    int64_t unreadFrames = mNumUnreadFrames[channel] + numFrames;
+    if (unreadFrames >= mSizeOfBuffer) unreadFrames = mSizeOfBuffer;
+    
+    atomic_set(&mNumUnreadFrames[channel], unreadFrames);
+}
+
 void RingBuffer::AddNewSInt16AudioBuffer(const AudioBuffer aBuffer)
 {
 		
@@ -67,10 +80,8 @@ void RingBuffer::AddNewSInt16AudioBuffer(const AudioBuffer aBuffer)
 			idx = (i + mLastWrittenIndex[iChannel]) % (mSizeOfBuffer);
 			mData[iChannel][idx] = (float)newData[i*numChannelsHere + iChannel];
 		}
-		
-		mLastWrittenIndex[iChannel] = (mLastWrittenIndex[iChannel] + numFrames) % (mSizeOfBuffer);
-        mNumUnreadFrames[iChannel] = mNumUnreadFrames[iChannel] + numFrames;
-        if (mNumUnreadFrames[iChannel] >= mSizeOfBuffer) mNumUnreadFrames[iChannel] = mSizeOfBuffer;
+        
+        UpdateFrameCount(numFrames, iChannel);
 	}
 	
 	
@@ -83,10 +94,8 @@ void RingBuffer::AddNewSInt16Data(const SInt16 *newData, const SInt64 numFrames,
 		idx = (i + mLastWrittenIndex[whichChannel]) % (mSizeOfBuffer);
 		mData[whichChannel][idx] = (float)newData[i];
 	}
-	
-	mLastWrittenIndex[whichChannel] = (mLastWrittenIndex[whichChannel] + numFrames) % (mSizeOfBuffer);
-    mNumUnreadFrames[whichChannel] = mNumUnreadFrames[whichChannel] + numFrames;
-    if (mNumUnreadFrames[whichChannel] >= mSizeOfBuffer) mNumUnreadFrames[whichChannel] = mSizeOfBuffer;
+    
+    UpdateFrameCount(numFrames, whichChannel);
 }
 
 void RingBuffer::AddNewFloatData(const float *newData, const SInt64 numFrames, const SInt64 whichChannel)
@@ -97,10 +106,8 @@ void RingBuffer::AddNewFloatData(const float *newData, const SInt64 numFrames, c
 		idx = (i + mLastWrittenIndex[whichChannel]) % (mSizeOfBuffer);
 		mData[whichChannel][idx] = newData[i];
 	}
-	
-	mLastWrittenIndex[whichChannel] = (mLastWrittenIndex[whichChannel] + numFrames) % (mSizeOfBuffer);
-    mNumUnreadFrames[whichChannel] = mNumUnreadFrames[whichChannel] + numFrames;
-    if (mNumUnreadFrames[whichChannel] >= mSizeOfBuffer) mNumUnreadFrames[whichChannel] = mSizeOfBuffer;
+    
+    UpdateFrameCount(numFrames, whichChannel);
 }
 
 void RingBuffer::AddNewDoubleData(const double *newData, const SInt64 numFrames, const SInt64 whichChannel)
@@ -111,10 +118,7 @@ void RingBuffer::AddNewDoubleData(const double *newData, const SInt64 numFrames,
 		idx = (i + mLastWrittenIndex[whichChannel]) % (mSizeOfBuffer);
 		mData[whichChannel][idx] = (float)newData[i];
 	}
-	
-	mLastWrittenIndex[whichChannel] = (mLastWrittenIndex[whichChannel] + numFrames) % (mSizeOfBuffer);
-    mNumUnreadFrames[whichChannel] = mNumUnreadFrames[whichChannel] + numFrames;
-    if (mNumUnreadFrames[whichChannel] >= mSizeOfBuffer) mNumUnreadFrames[whichChannel] = mSizeOfBuffer;
+    UpdateFrameCount(numFrames, whichChannel);
 }
 
 void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 numFrames, const SInt64 numChannelsHere)
@@ -129,33 +133,29 @@ void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 n
 			vDSP_vsadd((float *)&newData[iChannel], 
 					   numChannelsHere, 
 					   &zero, 
-					   &mData[iChannel][mLastWrittenIndex[iChannel]], 
+					   &mData[iChannel][mLastWrittenIndex[iChannel]],
 					   1, 
 					   numFrames);
-		}
-			
-		else {															// if we will overrun, then we need to do two separate copies.
+		} else {														// if we will overrun, then we need to do two separate copies.
 			int numSamplesInFirstCopy = mSizeOfBuffer - mLastWrittenIndex[iChannel];
 			int numSamplesInSecondCopy = numFrames - numSamplesInFirstCopy;
-			
+            
 			vDSP_vsadd((float *)&newData[iChannel], 
 					   numChannelsHere, 
 					   &zero, 
-					   &mData[iChannel][mLastWrittenIndex[iChannel]], 
+					   &mData[iChannel][mLastWrittenIndex[iChannel]],
 					   1, 
 					   numSamplesInFirstCopy);
-			
+            
 			vDSP_vsadd((float *)&newData[numSamplesInFirstCopy*numChannelsHere + iChannel], 
 					   numChannelsHere, 
 					   &zero, 
-					   &mData[iChannel][0], 
+					   &mData[iChannel][0],
 					   1, 
 					   numSamplesInSecondCopy);
 		}
-	
-		mLastWrittenIndex[iChannel] = (mLastWrittenIndex[iChannel] + numFrames) % (mSizeOfBuffer);
-        mNumUnreadFrames[iChannel] = (mNumUnreadFrames[iChannel] + numFrames);
-        if (mNumUnreadFrames[iChannel] >= mSizeOfBuffer) mNumUnreadFrames[iChannel] = mSizeOfBuffer;
+        
+        UpdateFrameCount(numFrames, iChannel);
 	}
 	
 	
@@ -214,8 +214,14 @@ void RingBuffer::FetchData(float *outData, SInt64 numFrames, SInt64 whichChannel
 	
     mLastReadIndex[whichChannel] = (mLastReadIndex[whichChannel] + numFrames) % (mSizeOfBuffer);
     
-    mNumUnreadFrames[whichChannel] -= numFrames;
-    if (mNumUnreadFrames[whichChannel] <= 0) mNumUnreadFrames[whichChannel] = 0;
+    int64_t toAdd;
+    
+    if(mNumUnreadFrames[whichChannel] > numFrames)
+        toAdd = -numFrames;
+    else
+        toAdd = -mNumUnreadFrames[whichChannel];
+    
+    OSAtomicAdd64(toAdd, &mNumUnreadFrames[whichChannel]);
 
 }
 
@@ -237,17 +243,18 @@ void RingBuffer::FetchFreshData(float *outData, SInt64 numFrames, SInt64 whichCh
 	}
 	
 	mLastReadIndex[whichChannel] = mLastWrittenIndex[whichChannel];
-    mNumUnreadFrames[whichChannel] = 0; // Reading at the front of the buffer resets old data
+    // Reading at the front of the buffer resets old data
+    atomic_set(&mNumUnreadFrames[whichChannel], 0);
 }
 
 void RingBuffer::SeekWriteHeadPosition(SInt64 offset, int iChannel)
 {
-    mLastWrittenIndex[iChannel] = (mLastWrittenIndex[iChannel] + offset) % (mSizeOfBuffer);
+    atomic_set(&mLastWrittenIndex[iChannel], (mLastWrittenIndex[iChannel] + offset) % (mSizeOfBuffer));
 }
 
 void RingBuffer::SeekReadHeadPosition(SInt64 offset, int iChannel)
 {
-    mLastReadIndex[iChannel] = (mLastReadIndex[iChannel] + offset) % (mSizeOfBuffer);
+     atomic_set(&mLastReadIndex[iChannel], (mLastReadIndex[iChannel] + offset) % (mSizeOfBuffer));
 }
 
 
@@ -287,9 +294,9 @@ float RingBuffer::Min(const SInt64 whichChannel)
 void RingBuffer::Clear()
 {
 	for (int i=0; i < mNumChannels; ++i) {
+        atomic_set(&mLastWrittenIndex[i], 0);
+        atomic_set(&mLastReadIndex[i], 0);
 		memset(mData[i], 0, sizeof(float)*mSizeOfBuffer);
-		mLastWrittenIndex[i] = 0;
-		mLastReadIndex[i] = 0;
 	}
 	
 }
