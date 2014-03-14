@@ -212,7 +212,7 @@ void RingBuffer::FetchData(float *outData, SInt64 numFrames, SInt64 whichChannel
 		outData[i*stride] = mData[whichChannel][idx];
 	}
 	
-    mLastReadIndex[whichChannel] = (mLastReadIndex[whichChannel] + numFrames) % (mSizeOfBuffer);
+    atomic_set(&mLastReadIndex[whichChannel], (mLastReadIndex[whichChannel] + numFrames) % (mSizeOfBuffer));
     
     int64_t toAdd;
     
@@ -242,7 +242,7 @@ void RingBuffer::FetchFreshData(float *outData, SInt64 numFrames, SInt64 whichCh
 		outData[i*stride] = mData[whichChannel][idx];
 	}
 	
-	mLastReadIndex[whichChannel] = mLastWrittenIndex[whichChannel];
+	atomic_set(&mLastReadIndex[whichChannel], mLastWrittenIndex[whichChannel]);
     // Reading at the front of the buffer resets old data
     atomic_set(&mNumUnreadFrames[whichChannel], 0);
 }
@@ -296,6 +296,7 @@ void RingBuffer::Clear()
 	for (int i=0; i < mNumChannels; ++i) {
         atomic_set(&mLastWrittenIndex[i], 0);
         atomic_set(&mLastReadIndex[i], 0);
+        atomic_set(&mNumUnreadFrames[i], 0);
 		memset(mData[i], 0, sizeof(float)*mSizeOfBuffer);
 	}
 	
