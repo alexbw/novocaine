@@ -163,6 +163,12 @@
     ExtAudioFileTell(self.inputFile, &frameOffset);
     self.currentFileTime = (float)frameOffset / self.samplingRate;
     
+    ExtAudioFileRead(self.inputFile, &framesRead, &incomingAudio);
+    
+    if ( framesRead == 0 ) { // EOF.
+        [self pause];
+    }
+    
     // Add the new audio to the ring buffer
     ringBuffer->AddNewInterleavedFloatData(self.outputBuffer, framesRead, self.numChannels);
     
