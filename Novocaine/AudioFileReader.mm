@@ -163,7 +163,8 @@
     ExtAudioFileTell(self.inputFile, &frameOffset);
     self.currentFileTime = (float)frameOffset / self.samplingRate;
     
-    ExtAudioFileRead(self.inputFile, &framesRead, &incomingAudio);
+    // Seems to fix issue #85 corrupted sample reads
+    // ExtAudioFileRead(self.inputFile, &framesRead, &incomingAudio);
     
     if ( framesRead == 0 ) { // EOF.
         [self pause];
