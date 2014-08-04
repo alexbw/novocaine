@@ -57,7 +57,7 @@ RingBuffer::~RingBuffer()
     }
 }
 
-void RingBuffer::UpdateFrameCount(int numFrames, int channel)
+void RingBuffer::UpdateFrameCount(SInt64 numFrames, SInt64 channel)
 {
     atomic_set(&mLastWrittenIndex[channel], (mLastWrittenIndex[channel] + numFrames) % (mSizeOfBuffer));
     int64_t unreadFrames = mNumUnreadFrames[channel] + numFrames;
@@ -124,7 +124,7 @@ void RingBuffer::AddNewDoubleData(const double *newData, const SInt64 numFrames,
 void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 numFrames, const SInt64 numChannelsHere)
 {
 	
-	int numChannelsToCopy = (numChannelsHere <= mNumChannels) ? numChannelsHere : mNumChannels;
+	SInt64 numChannelsToCopy = (numChannelsHere <= mNumChannels) ? numChannelsHere : mNumChannels;
 	float zero = 0.0f;
 	
 	for (int iChannel = 0; iChannel < numChannelsToCopy; ++iChannel) {
@@ -137,8 +137,8 @@ void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 n
 					   1, 
 					   numFrames);
 		} else {														// if we will overrun, then we need to do two separate copies.
-			int numSamplesInFirstCopy = mSizeOfBuffer - mLastWrittenIndex[iChannel];
-			int numSamplesInSecondCopy = numFrames - numSamplesInFirstCopy;
+			SInt64 numSamplesInFirstCopy = mSizeOfBuffer - mLastWrittenIndex[iChannel];
+			SInt64 numSamplesInSecondCopy = numFrames - numSamplesInFirstCopy;
             
 			vDSP_vsadd((float *)&newData[iChannel], 
 					   numChannelsHere, 
@@ -166,7 +166,7 @@ void RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichC
 
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
         
-        UInt32 idx = mLastWrittenIndex[whichChannel] - numFrames;
+        UInt64 idx = mLastWrittenIndex[whichChannel] - numFrames;
         float zero = 0.0f;
         vDSP_vsadd(&mData[whichChannel][idx], 
                    1, 
@@ -179,13 +179,13 @@ void RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichC
     else { // if we will overrun, then we need to do two separate copies.
         
         // The copy that bleeds off the left, and cycles back to the right of the ring buffer
-        int numSamplesInFirstCopy = numFrames - mLastWrittenIndex[whichChannel];
+        int64_t numSamplesInFirstCopy = numFrames - mLastWrittenIndex[whichChannel];
         // The copy that starts at the beginning, and proceeds to the end.
-        int numSamplesInSecondCopy = mLastWrittenIndex[whichChannel];
+        int64_t numSamplesInSecondCopy = mLastWrittenIndex[whichChannel];
         
         
         float zero = 0.0f;
-        UInt32 firstIndex = mSizeOfBuffer - numSamplesInFirstCopy;
+        UInt64 firstIndex = mSizeOfBuffer - numSamplesInFirstCopy;
         vDSP_vsadd(&mData[whichChannel][firstIndex],
                    1, 
                    &zero, 
@@ -206,7 +206,7 @@ void RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichC
 
 void RingBuffer::FetchData(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride)
 {
-    int idx;
+    int64_t idx;
 	for (int i=0; i < numFrames; ++i) {
 		idx = (mLastReadIndex[whichChannel] + i) % (mSizeOfBuffer);
 		outData[i*stride] = mData[whichChannel][idx];
@@ -236,7 +236,7 @@ void RingBuffer::FetchInterleavedData(float *outData, SInt64 numFrames, SInt64 n
 void RingBuffer::FetchFreshData(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride)
 {
 
-	int idx;
+	int64_t idx;
 	for (int i=0; i < numFrames; ++i) {
 		idx = (mLastWrittenIndex[whichChannel] - numFrames + i) % (mSizeOfBuffer);
 		outData[i*stride] = mData[whichChannel][idx];
@@ -260,7 +260,7 @@ void RingBuffer::SeekReadHeadPosition(SInt64 offset, int iChannel)
 
 SInt64 RingBuffer::NumNewFrames(SInt64 lastReadFrame, int iChannel)
 {
-	int numNewFrames = mLastWrittenIndex[iChannel] - lastReadFrame;
+	int64_t numNewFrames = mLastWrittenIndex[iChannel] - lastReadFrame;
 	if (numNewFrames < 0) numNewFrames += mSizeOfBuffer;
 	
 	return (SInt64)numNewFrames;

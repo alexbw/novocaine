@@ -71,6 +71,6 @@ protected:
 	bool mAllocated;
 
 private:
-    void UpdateFrameCount(int numFrames, int channel);
+    void UpdateFrameCount(SInt64 numFrames, SInt64 channel);
 	
 };
