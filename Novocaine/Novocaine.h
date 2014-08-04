@@ -35,60 +35,7 @@
 
 #include <Block.h>
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-	
-static void CheckError(OSStatus error, const char *operation)
-{
-	if (error == noErr) return;
-	
-	char str[20];
-	// see if it appears to be a 4-char-code
-	*(UInt32 *)(str + 1) = CFSwapInt32HostToBig(error);
-	if (isprint(str[1]) && isprint(str[2]) && isprint(str[3]) && isprint(str[4])) {
-		str[0] = str[5] = '\'';
-		str[6] = '\0';
-	} else
-		// no, format it as an integer
-		sprintf(str, "%d", (int)error);
-    
-	fprintf(stderr, "Error: %s (%s)\n", operation, str);
-    
-	exit(1);
-}
-
-
-OSStatus inputCallback (void						*inRefCon,
-						AudioUnitRenderActionFlags	* ioActionFlags,
-						const AudioTimeStamp 		* inTimeStamp,
-						UInt32						inOutputBusNumber,
-						UInt32						inNumberFrames,
-						AudioBufferList				* ioData);
-
-OSStatus renderCallback (void						*inRefCon,
-                         AudioUnitRenderActionFlags	* ioActionFlags,
-                         const AudioTimeStamp 		* inTimeStamp,
-                         UInt32						inOutputBusNumber,
-                         UInt32						inNumberFrames,
-                         AudioBufferList				* ioData);
-
-
-#if defined (USING_IOS)
-void sessionPropertyListener(void *                  inClientData,
-							 AudioSessionPropertyID  inID,
-							 UInt32                  inDataSize,
-							 const void *            inData);
-
-#endif
-
-
-void sessionInterruptionListener(void *inClientData, UInt32 inInterruption);
-
-#ifdef __cplusplus
-}
-#endif
+FOUNDATION_EXTERN void CheckError(OSStatus error, const char *operation);
 
 typedef void (^NovocaineOutputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
