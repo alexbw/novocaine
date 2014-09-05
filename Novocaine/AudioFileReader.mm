@@ -194,6 +194,7 @@
 - (void)setCurrentTime:(float)thisCurrentTime
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        [self clearBuffer];
         ExtAudioFileSeek(self.inputFile, thisCurrentTime*self.samplingRate);
     });
 }
