@@ -3,7 +3,7 @@ Pod::Spec.new do |spec|
     spec.version      = '0.0.1'
     spec.summary      = 'Novocaine'
     spec.source_files = 'Novocaine/'
-    spec.requires_arc = false
+    spec.requires_arc = true
     spec.ios.deployment_target = '6.0'
     spec.frameworks = 'AudioToolbox','Accelerate'
     spec.libraries = 'stdc++'
