@@ -33,6 +33,10 @@
     #include <AVFoundation/AVFoundation.h>
 #endif
 
+#if defined (USING_IOS)
+    #import <UIKit/UIKit.h>
+#endif
+
 #include <Block.h>
 
 FOUNDATION_EXTERN void CheckError(OSStatus error, const char *operation);
