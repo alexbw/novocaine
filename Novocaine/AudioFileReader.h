@@ -25,6 +25,22 @@
 #import "RingBuffer.h"
 #import "Novocaine.h"
 
+// ARC only supports GCD objects if the minimum deployment target is iOS 6+ or OS X 10.8+
+#if TARGET_OS_IPHONE
+  // Compiling for iOS
+    #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000   // iOS 6.0 or later
+        #define NEEDS_DISPATCH_RETAIN_RELEASE 0
+    #else                                           // iOS 5.x or earlier
+        #define NEEDS_DISPATCH_RETAIN_RELEASE 1
+    #endif
+#else
+    // Compiling for Mac OS X
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1080       // Mac OS X 10.8 or later
+        #define NEEDS_DISPATCH_RETAIN_RELEASE 0
+    #else
+        #define NEEDS_DISPATCH_RETAIN_RELEASE 1     // Mac OS X 10.7 or earlier
+    #endif
+#endif
 
 @interface AudioFileReader : NSObject
 
